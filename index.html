@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NxtCue - Never Wonder What to Watch Next</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            nxt: { cyan: '#00d2ff', purple: '#8b5cf6', magenta: '#d946ef', coral: '#ff5722', orange: '#f97316' },
+            surface: { base: '#05070a', card: '#0d0f17', elevated: '#141724', border: '#1f2438' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #05070a; color: #f3f4f6; }
+    .carousel-container::-webkit-scrollbar { display: none; }
+    .carousel-container { -ms-overflow-style: none; scrollbar-width: none; }
+    .glass-nav {
+      background: rgba(5, 7, 10, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .spectrum-gradient {
+      background: linear-gradient(135deg, #00d2ff 0%, #8b5cf6 45%, #d946ef 75%, #ff5722 100%);
+    }
+    .spectrum-text {
+      background: linear-gradient(135deg, #00d2ff 0%, #a855f7 50%, #f97316 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .spectrum-border-glow {
+      box-shadow: 0 0 25px rgba(139, 92, 246, 0.35), 0 0 10px rgba(0, 210, 255, 0.2);
+    }
+    .logo-frame {
+      box-shadow: 0 0 15px rgba(0, 210, 255, 0.3), 0 0 20px rgba(255, 87, 34, 0.25);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-purple-600 selection:text-white pb-24">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="fixed top-0 inset-x-0 z-40 glass-nav border-b border-surface-border/70 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center space-x-4 flex-shrink-0">
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="switchView('home')">
+          <div class="w-10 h-10 rounded-2xl bg-surface-base border border-nxt-purple/40 logo-frame p-1 flex items-center justify-center relative overflow-hidden">
+            <svg viewBox="0 0 100 100" class="w-full h-full" fill="none">
+              <defs>
+                <linearGradient id="nxtStem" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00d2ff" /><stop offset="100%" stop-color="#6366f1" /></linearGradient>
+                <linearGradient id="nxtDiag" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#38bdf8" /><stop offset="50%" stop-color="#8b5cf6" /><stop offset="100%" stop-color="#d946ef" /></linearGradient>
+                <linearGradient id="nxtChevron" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f59e0b" /><stop offset="40%" stop-color="#ff5722" /><stop offset="100%" stop-color="#e11d48" /></linearGradient>
+              </defs>
+              <path d="M25 25 C25 20, 35 20, 42 27 L65 52 C70 57, 65 67, 58 67 L35 43 C29 38, 25 32, 25 25 Z" fill="url(#nxtDiag)" opacity="0.95"/>
+              <path d="M25 25 C25 20, 33 20, 35 25 L35 72 C35 77, 25 77, 25 72 Z" fill="url(#nxtStem)" />
+              <path d="M58 35 C58 30, 64 28, 68 32 L82 46 C86 50, 86 55, 82 59 L67 73 C62 77, 57 73, 59 67 L68 53 L58 43 Z" fill="url(#nxtChevron)"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-xl font-extrabold tracking-tight text-white flex items-center">
+              Nxt<span class="spectrum-text">Cue</span>
+            </h1>
+            <p class="text-[9px] text-gray-400 font-semibold tracking-wider hidden sm:block -mt-1 uppercase">Smart Entertainment Companion</p>
+          </div>
+        </div>
+
+        <!-- Desktop Navigation Tabs -->
+        <nav class="hidden md:flex items-center space-x-1">
+          <button onclick="switchView('home')" id="nav-home" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold text-white bg-surface-elevated border border-surface-border transition">Home</button>
+          <button onclick="switchView('franchises')" id="nav-franchises" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white transition">Franchises</button>
+          <button onclick="switchView('library')" id="nav-library" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white transition">Library (<span id="lib-count">0</span>)</button>
+        </nav>
+      </div>
+
+      <!-- Live Search Bar -->
+      <div class="flex-grow max-w-md relative">
+        <div class="relative">
+          <span class="absolute inset-y-0 left-3 flex items-center text-gray-400 text-sm">🔍</span>
+          <input 
+            type="text" 
+            id="search-input" 
+            placeholder="Search movies, TV series, anime..." 
+            class="w-full pl-9 pr-4 py-2 rounded-full bg-surface-card border border-surface-border text-xs text-white placeholder-gray-500 focus:outline-none focus:border-nxt-purple focus:ring-1 focus:ring-nxt-purple transition shadow-inner"
+            oninput="handleLiveSearch(this.value)"
+          />
+        </div>
+      </div>
+
+      <!-- Right Controls: Taste Changer & Sleek Profile Avatar -->
+      <div class="flex items-center space-x-3 flex-shrink-0">
+        <button onclick="toggleTasteChanger()" id="taste-changer-btn" class="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-surface-card border border-surface-border text-gray-300 hover:border-nxt-coral hover:text-white transition">
+          <span class="text-nxt-coral">⚡</span>
+          <span class="hidden sm:inline">Taste Changer</span>
+        </button>
+
+        <!-- Modern Profile Button -->
+        <button onclick="toggleAccountDrawer()" class="relative p-0.5 rounded-full spectrum-gradient hover:opacity-95 transition focus:outline-none" title="Account & Cloud Sync">
+          <div class="w-8 h-8 rounded-full bg-surface-base flex items-center justify-center text-xs font-bold text-white">
+            <span id="user-avatar-text">SR</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- SLIDE-OVER ACCOUNT & CLOUD SYNC DRAWER -->
+  <div id="account-drawer" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex justify-end hidden transition-opacity">
+    <div class="bg-surface-card border-l border-surface-border w-full max-w-md h-full p-6 space-y-6 overflow-y-auto flex flex-col justify-between shadow-2xl">
+      <div class="space-y-6">
+        <div class="flex items-center justify-between border-b border-surface-border pb-4">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full spectrum-gradient flex items-center justify-center font-bold text-white shadow-md">
+              SR
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-white">My Account</h3>
+              <p class="text-[11px] text-nxt-cyan font-medium">Guest Mode (Local Cache)</p>
+            </div>
+          </div>
+          <button onclick="toggleAccountDrawer()" class="w-8 h-8 rounded-full bg-surface-elevated text-gray-400 hover:text-white flex items-center justify-center font-bold">✕</button>
+        </div>
+
+        <!-- Cloud Sync Card -->
+        <div class="p-4 rounded-2xl bg-surface-elevated border border-surface-border space-y-3">
+          <div class="flex items-start space-x-3">
+            <span class="text-lg">☁️</span>
+            <div>
+              <h4 class="text-xs font-bold text-white">Cloud Sync & Cross-Device Access</h4>
+              <p class="text-[11px] text-gray-400 mt-0.5">Sign in to sync your Watchlist and ratings between your laptop and phone automatically.</p>
+            </div>
+          </div>
+          <button onclick="alert('Firebase Cloud Authentication will be activated on live hosting. Your data is currently safely backed up locally!')" class="w-full py-2 rounded-xl text-xs font-bold bg-white text-black hover:bg-gray-200 transition flex items-center justify-center space-x-2 shadow">
+            <span>Sign in with Google</span>
+          </button>
+        </div>
+
+        <!-- Data Management -->
+        <div class="space-y-3 pt-2">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400">Data Management</h4>
+          
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="exportUserDataJSON()" class="p-3 rounded-xl bg-surface-elevated border border-surface-border hover:border-nxt-cyan text-left transition">
+              <span class="block text-xs font-bold text-white">Export JSON</span>
+              <span class="text-[10px] text-gray-400">Full backup file</span>
+            </button>
+
+            <button onclick="exportUserDataCSV()" class="p-3 rounded-xl bg-surface-elevated border border-surface-border hover:border-nxt-cyan text-left transition">
+              <span class="block text-xs font-bold text-white">Export CSV</span>
+              <span class="text-[10px] text-gray-400">For Excel / Sheets</span>
+            </button>
+          </div>
+
+          <div class="pt-2">
+            <input type="file" id="import-file-input" accept=".json" class="hidden" onchange="importUserDataJSON(event)" />
+            <button onclick="document.getElementById('import-file-input').click()" class="w-full py-2.5 rounded-xl text-xs font-semibold bg-surface-elevated border border-surface-border hover:border-nxt-purple text-gray-200 text-center transition block">
+              Restore from Backup File (.json)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="pt-6 border-t border-surface-border">
+        <button onclick="resetUserData()" class="w-full py-2 rounded-xl text-xs font-semibold text-rose-400 hover:bg-rose-500/10 border border-rose-500/30 transition">
+          Clear Local Library Cache
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="flex-grow pt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+
+    <!-- SEARCH RESULTS SECTION -->
+    <div id="search-results-section" class="hidden mb-10 space-y-4">
+      <div class="flex items-center justify-between border-b border-surface-border pb-2">
+        <h2 class="text-sm font-bold text-white flex items-center gap-2">
+          <span>Search Results for</span><span id="search-query-display" class="spectrum-text font-black"></span>
+        </h2>
+        <button onclick="closeSearchResults()" class="text-xs text-gray-400 hover:text-white">✕ Clear</button>
+      </div>
+      <div id="search-results-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
+    </div>
+
+    <!-- MEDIA TYPE SWITCHER PILLS -->
+    <div class="flex items-center justify-between my-3 overflow-x-auto pb-1">
+      <div class="flex items-center space-x-2">
+        <button onclick="setMediaTypeFilter('all')" id="filter-all" class="type-filter-btn px-4 py-1.5 rounded-full text-xs font-bold spectrum-gradient text-white shadow-sm transition">All Media</button>
+        <button onclick="setMediaTypeFilter('movie')" id="filter-movie" class="type-filter-btn px-4 py-1.5 rounded-full text-xs font-semibold bg-surface-card text-gray-400 hover:text-white hover:bg-surface-elevated transition">Movies</button>
+        <button onclick="setMediaTypeFilter('tv')" id="filter-tv" class="type-filter-btn px-4 py-1.5 rounded-full text-xs font-semibold bg-surface-card text-gray-400 hover:text-white hover:bg-surface-elevated transition">TV Series</button>
+        <button onclick="setMediaTypeFilter('anime')" id="filter-anime" class="type-filter-btn px-4 py-1.5 rounded-full text-xs font-semibold bg-surface-card text-gray-400 hover:text-white hover:bg-surface-elevated transition">Anime</button>
+      </div>
+      <div class="text-xs text-gray-400 hidden sm:block">
+        Watched: <span id="watched-stat" class="text-white font-bold">0</span> | Watchlist: <span id="watchlist-stat" class="text-white font-bold">0</span>
+      </div>
+    </div>
+
+    <!-- GENRE & MOOD FILTER BAR -->
+    <div class="flex items-center space-x-1.5 overflow-x-auto pb-3 mb-2 text-xs">
+      <span class="text-gray-500 font-semibold px-1 hidden sm:inline">Mood:</span>
+      <button onclick="setGenreFilter('all')" id="genre-all" class="genre-pill-btn px-3 py-1 rounded-lg font-bold bg-surface-elevated text-white border border-nxt-purple/40 transition">All</button>
+      <button onclick="setGenreFilter('Sci-Fi')" id="genre-Sci-Fi" class="genre-pill-btn px-3 py-1 rounded-lg font-medium bg-surface-card text-gray-400 hover:text-white border border-surface-border transition">🌌 Mind-Bending Sci-Fi</button>
+      <button onclick="setGenreFilter('Action')" id="genre-Action" class="genre-pill-btn px-3 py-1 rounded-lg font-medium bg-surface-card text-gray-400 hover:text-white border border-surface-border transition">🔥 Adrenaline Action</button>
+      <button onclick="setGenreFilter('Thriller')" id="genre-Thriller" class="genre-pill-btn px-3 py-1 rounded-lg font-medium bg-surface-card text-gray-400 hover:text-white border border-surface-border transition">🔪 Edge-of-Seat Thriller</button>
+      <button onclick="setGenreFilter('Anime')" id="genre-Anime" class="genre-pill-btn px-3 py-1 rounded-lg font-medium bg-surface-card text-gray-400 hover:text-white border border-surface-border transition">⚔️ Epic Anime</button>
+      <button onclick="setGenreFilter('Drama')" id="genre-Drama" class="genre-pill-btn px-3 py-1 rounded-lg font-medium bg-surface-card text-gray-400 hover:text-white border border-surface-border transition">🎭 Deep Drama</button>
+      <button onclick="setGenreFilter('Crime')" id="genre-Crime" class="genre-pill-btn px-3 py-1 rounded-lg font-medium bg-surface-card text-gray-400 hover:text-white border border-surface-border transition">🕵️ Crime & Mystery</button>
+    </div>
+
+    <!-- HOME VIEW -->
+    <div id="view-home" class="space-y-10">
+
+      <!-- HERO BANNER (TONIGHT'S TOP CUE) -->
+      <section id="hero-section" class="relative rounded-3xl overflow-hidden border border-surface-border bg-gradient-to-t from-surface-card to-surface-base shadow-2xl transition-all duration-500 min-h-[440px] flex items-center justify-center"></section>
+
+      <!-- CAROUSEL 1: TONIGHT'S TOP CUES -->
+      <section class="space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <span class="text-nxt-cyan font-bold text-lg">🎯</span>
+            <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">Top Cues Calculated For You</h2>
+          </div>
+          <span class="text-xs text-gray-400">Personal taste engine</span>
+        </div>
+        <div id="top-cues-carousel" class="carousel-container flex space-x-4 overflow-x-auto py-2"></div>
+      </section>
+
+      <!-- CAROUSEL 2: TASTE CHANGER -->
+      <section class="space-y-3 p-5 rounded-2xl bg-gradient-to-r from-nxt-coral/15 via-surface-card to-surface-card border border-nxt-coral/30">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <span class="text-nxt-coral font-bold text-lg">⚡</span>
+            <div>
+              <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">The Taste Changer</h2>
+              <p class="text-xs text-nxt-coral/80">Critically acclaimed gems outside your typical comfort zone</p>
+            </div>
+          </div>
+        </div>
+        <div id="taste-changer-carousel" class="carousel-container flex space-x-4 overflow-x-auto py-2"></div>
+      </section>
+
+      <!-- CAROUSEL 3: TRENDING -->
+      <section class="space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <span class="text-nxt-magenta font-bold text-lg">🔥</span>
+            <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">Trending Across The Globe</h2>
+          </div>
+        </div>
+        <div id="trending-carousel" class="carousel-container flex space-x-4 overflow-x-auto py-2"></div>
+      </section>
+    </div>
+
+    <!-- FRANCHISES VIEW (EXPANDED UNIVERSES) -->
+    <div id="view-franchises" class="hidden space-y-8">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-border pb-4">
+        <div>
+          <h2 class="text-2xl font-bold text-white">Chronological Universe Guides</h2>
+          <p class="text-sm text-gray-400">Track complex film & anime sagas in timeline order. NxtCue highlights your exact Next Up.</p>
+        </div>
+        <div class="flex items-center space-x-2 overflow-x-auto">
+          <button onclick="filterFranchises('all')" class="f-pill px-3 py-1 rounded-lg text-xs font-bold bg-surface-elevated text-white border border-nxt-purple/40">All Universes</button>
+          <button onclick="filterFranchises('Marvel')" class="f-pill px-3 py-1 rounded-lg text-xs font-medium bg-surface-card text-gray-400 hover:text-white border border-surface-border">Marvel</button>
+          <button onclick="filterFranchises('Star Wars')" class="f-pill px-3 py-1 rounded-lg text-xs font-medium bg-surface-card text-gray-400 hover:text-white border border-surface-border">Star Wars</button>
+          <button onclick="filterFranchises('Wizarding World')" class="f-pill px-3 py-1 rounded-lg text-xs font-medium bg-surface-card text-gray-400 hover:text-white border border-surface-border">Harry Potter</button>
+          <button onclick="filterFranchises('Anime')" class="f-pill px-3 py-1 rounded-lg text-xs font-medium bg-surface-card text-gray-400 hover:text-white border border-surface-border">Anime</button>
+          <button onclick="filterFranchises('Batman')" class="f-pill px-3 py-1 rounded-lg text-xs font-medium bg-surface-card text-gray-400 hover:text-white border border-surface-border">Batman</button>
+        </div>
+      </div>
+
+      <div id="franchises-list" class="space-y-8"></div>
+    </div>
+
+    <!-- LIBRARY VIEW -->
+    <div id="view-library" class="hidden space-y-6">
+      <div class="flex items-center justify-between border-b border-surface-border pb-4">
+        <div>
+          <h2 class="text-2xl font-bold text-white">My Personal Library</h2>
+          <p class="text-sm text-gray-400">Your logged entertainment catalog.</p>
+        </div>
+        <div class="flex bg-surface-card rounded-lg p-1 border border-surface-border text-xs">
+          <button onclick="setLibraryTab('watchlist')" id="lib-tab-watchlist" class="px-3.5 py-1.5 rounded-md font-semibold text-white bg-surface-elevated">Watchlist</button>
+          <button onclick="setLibraryTab('watched')" id="lib-tab-watched" class="px-3.5 py-1.5 rounded-md font-medium text-gray-400 hover:text-white">Watched</button>
+        </div>
+      </div>
+
+      <div id="library-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+    </div>
+
+    <!-- FOOTER WITH MANDATORY TMDB ATTRIBUTION -->
+    <footer class="mt-20 pt-8 border-t border-surface-border/50 text-center text-xs text-gray-500 space-y-2">
+      <p class="flex items-center justify-center gap-2">
+        <span class="spectrum-text font-bold">NxtCue</span> • Smart Personal Entertainment Discovery
+      </p>
+      <p class="text-[11px] text-gray-600">
+        This product uses the TMDB API but is not endorsed or certified by TMDB.
+      </p>
+    </footer>
+
+  </main>
+
+  <!-- MOBILE BOTTOM NAVIGATION -->
+  <nav class="md:hidden fixed bottom-0 inset-x-0 glass-nav border-t border-surface-border z-40 px-6 py-2 flex justify-around">
+    <button onclick="switchView('home')" class="flex flex-col items-center text-nxt-cyan text-xs font-semibold py-1">
+      <span class="text-lg">🏠</span><span>Home</span>
+    </button>
+    <button onclick="switchView('franchises')" class="flex flex-col items-center text-gray-400 text-xs font-medium py-1">
+      <span class="text-lg">🌌</span><span>Universes</span>
+    </button>
+    <button onclick="switchView('library')" class="flex flex-col items-center text-gray-400 text-xs font-medium py-1">
+      <span class="text-lg">📑</span><span>Library</span>
+    </button>
+  </nav>
+
+  <!-- DETAIL MODAL -->
+  <div id="title-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-surface-card border border-surface-border rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
+      <button onclick="closeModal()" class="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-black/70 text-white hover:bg-black flex items-center justify-center font-bold">✕</button>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <script>
+    const TMDB_API_KEY = 'ceeee68d7a12d0a646176d00284c4c45';
+    const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+
+    function getSafeImageUrl(path, size = 'w500') {
+      if (!path) return '';
+      const tmdbUrl = 'https://image.tmdb.org/t/p/' + size + path;
+      return 'https://images.weserv.nl/?url=' + encodeURIComponent(tmdbUrl) + '&default=' + encodeURIComponent(tmdbUrl);
+    }
+
+    function generateFallbackPoster(title, type) {
+      const safeTitle = (title || 'Movie').replace(/[^a-zA-Z0-9 ]/g, '');
+      const safeType = (type || 'Media').toUpperCase();
+      return 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="450" viewBox="0 0 300 450"><rect width="300" height="450" fill="%230d0f17"/><rect x="10" y="10" width="280" height="430" rx="16" fill="%23141724" stroke="%2338bdf8" stroke-width="2" stroke-opacity="0.3"/><text x="150" y="190" fill="%238b5cf6" font-size="44" font-family="sans-serif" text-anchor="middle">🎬</text><text x="150" y="245" fill="%23ffffff" font-size="16" font-family="sans-serif" font-weight="bold" text-anchor="middle">' + encodeURIComponent(safeTitle) + '</text><text x="150" y="275" fill="%23ff5722" font-size="12" font-family="sans-serif" font-weight="bold" text-anchor="middle">' + encodeURIComponent(safeType) + '</text></svg>';
+    }
+
+    function generateFallbackBackdrop(title) {
+      const safeTitle = (title || 'NxtCue Spotlight').replace(/[^a-zA-Z0-9 ]/g, '');
+      return 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%2305070a"/><stop offset="50%" stop-color="%23141724"/><stop offset="100%" stop-color="%23241434"/></linearGradient></defs><rect width="1280" height="720" fill="url(%23g)"/><text x="640" y="360" fill="%23ffffff" opacity="0.3" font-size="36" font-family="sans-serif" font-weight="bold" text-anchor="middle">' + encodeURIComponent(safeTitle) + '</text></svg>';
+    }
+
+    const INITIAL_CATALOG = [
+      { id: '157336', tmdbId: 157336, title: 'Interstellar', type: 'movie', year: '2014', ratingTmdb: 8.7, posterPath: '/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg', backdropPath: '/xJHokMbljvjADYdit5fK5VQsXEG.jpg', overview: 'When Earth becomes uninhabitable in the future, a farmer and ex-NASA pilot is tasked to pilot a spacecraft to find a new planet for humans.', genres: ['Sci-Fi', 'Drama'] },
+      { id: '27205', tmdbId: 27205, title: 'Inception', type: 'movie', year: '2010', ratingTmdb: 8.8, posterPath: '/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg', backdropPath: '/8ZTVqvKDQ8emSGUEMjsS4yHAwrp.jpg', overview: 'A thief who steals corporate secrets through dream-sharing technology is given the inverse task of planting an idea into a CEO\'s mind.', genres: ['Action', 'Sci-Fi'] },
+      { id: '496243', tmdbId: 496243, title: 'Parasite', type: 'movie', year: '2019', ratingTmdb: 8.5, posterPath: '/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg', backdropPath: '/hiKmpZMGZsrkA3cdce8a7Dpos1j.jpg', overview: 'Greed and class discrimination threaten the symbiotic relationship between the wealthy Park family and the destitute Kim clan.', genres: ['Thriller', 'Drama'] },
+      { id: '1429', tmdbId: 1429, title: 'Attack on Titan', type: 'anime', year: '2013', ratingTmdb: 9.0, posterPath: '/hTP1DtLGFamjfu8WqjnuQdP1n4i.jpg', backdropPath: '/i8GQ9L5B8D24T5PZ77rUqA1mYhD.jpg', overview: 'After his hometown is destroyed, Eren Jaeger vows to cleanse the earth of the giant humanoid Titans.', genres: ['Anime', 'Action'] },
+      { id: '85937', tmdbId: 85937, title: 'Demon Slayer: Kimetsu no Yaiba', type: 'anime', year: '2019', ratingTmdb: 8.7, posterPath: '/xUfRZu2mi8jH6SzQEJGP6tjBuYj.jpg', backdropPath: '/nTvM4mhqZlHIvUkI1gqfl89Teip.jpg', overview: 'Tanjiro sets out on the dangerous path of a Demon Slayer to avenge his family and cure his sister.', genres: ['Anime', 'Action'] },
+      { id: '155', tmdbId: 155, title: 'The Dark Knight', type: 'movie', year: '2008', ratingTmdb: 8.9, posterPath: '/qJ2tW6WMUDux911r6m7haRef0WH.jpg', backdropPath: '/nMKdUUepR0i5zn0y1T4CsSB5chy.jpg', overview: 'Batman raises the stakes in his war on crime with the help of Lt. Jim Gordon and District Attorney Harvey Dent against the Joker.', genres: ['Action', 'Crime'] },
+      { id: '110492', tmdbId: 110492, title: 'Severance', type: 'tv', year: '2022', ratingTmdb: 8.6, posterPath: '/A3vF1m4z3qHh29T2Fk7Z14Kx8A4.jpg', backdropPath: '/oF4h1d5lWv9qA4L0e0vC0J2fV9z.jpg', overview: 'Mark leads a team of office workers whose memories have been surgically divided between their work and personal lives.', genres: ['Sci-Fi', 'Mystery'] },
+      { id: '129', tmdbId: 129, title: 'Spirited Away', type: 'anime', year: '2001', ratingTmdb: 8.6, posterPath: '/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg', backdropPath: '/bXNvzjYEsnDmdaMm4afR7eT04vU.jpg', overview: 'During her family\'s move to the suburbs, a 10-year-old girl wanders into a world ruled by gods and spirits.', genres: ['Anime', 'Fantasy'] }
+    ];
+
+    let CATALOG = [...INITIAL_CATALOG];
+
+    const FRANCHISE_DEFINITIONS = {
+      "Marvel Cinematic Universe (Infinity Saga)": [
+        { tmdbId: 1771, type: 'movie', title: 'Captain America: The First Avenger', year: 2011, order: 1 },
+        { tmdbId: 1726, type: 'movie', title: 'Iron Man', year: 2008, order: 2 },
+        { tmdbId: 10138, type: 'movie', title: 'Iron Man 2', year: 2010, order: 3 },
+        { tmdbId: 10195, type: 'movie', title: 'Thor', year: 2011, order: 4 },
+        { tmdbId: 24428, type: 'movie', title: 'The Avengers', year: 2012, order: 5 },
+        { tmdbId: 100402, type: 'movie', title: 'Captain America: The Winter Soldier', year: 2014, order: 6 },
+        { tmdbId: 118340, type: 'movie', title: 'Guardians of the Galaxy', year: 2014, order: 7 },
+        { tmdbId: 271110, type: 'movie', title: 'Captain America: Civil War', year: 2016, order: 8 },
+        { tmdbId: 299536, type: 'movie', title: 'Avengers: Infinity War', year: 2018, order: 9 },
+        { tmdbId: 299534, type: 'movie', title: 'Avengers: Endgame', year: 2019, order: 10 }
+      ],
+      "Star Wars (Skywalker Saga)": [
+        { tmdbId: 1893, type: 'movie', title: 'Star Wars: Episode I - The Phantom Menace', year: 1999, order: 1 },
+        { tmdbId: 1894, type: 'movie', title: 'Star Wars: Episode II - Attack of the Clones', year: 2002, order: 2 },
+        { tmdbId: 1895, type: 'movie', title: 'Star Wars: Episode III - Revenge of the Sith', year: 2005, order: 3 },
+        { tmdbId: 330459, type: 'movie', title: 'Rogue One: A Star Wars Story', year: 2016, order: 4 },
+        { tmdbId: 11, type: 'movie', title: 'Star Wars: Episode IV - A New Hope', year: 1977, order: 5 },
+        { tmdbId: 1891, type: 'movie', title: 'Star Wars: Episode V - The Empire Strikes Back', year: 1980, order: 6 },
+        { tmdbId: 1892, type: 'movie', title: 'Star Wars: Episode VI - Return of the Jedi', year: 1983, order: 7 }
+      ],
+      "The Wizarding World (Harry Potter)": [
+        { tmdbId: 671, type: 'movie', title: 'Harry Potter and the Philosopher\'s Stone', year: 2001, order: 1 },
+        { tmdbId: 672, type: 'movie', title: 'Harry Potter and the Chamber of Secrets', year: 2002, order: 2 },
+        { tmdbId: 673, type: 'movie', title: 'Harry Potter and the Prisoner of Azkaban', year: 2004, order: 3 },
+        { tmdbId: 674, type: 'movie', title: 'Harry Potter and the Goblet of Fire', year: 2005, order: 4 },
+        { tmdbId: 675, type: 'movie', title: 'Harry Potter and the Order of the Phoenix', year: 2007, order: 5 },
+        { tmdbId: 767, type: 'movie', title: 'Harry Potter and the Half-Blood Prince', year: 2009, order: 6 },
+        { tmdbId: 12444, type: 'movie', title: 'Harry Potter and the Deathly Hallows: Part 1', year: 2010, order: 7 },
+        { tmdbId: 12445, type: 'movie', title: 'Harry Potter and the Deathly Hallows: Part 2', year: 2011, order: 8 }
+      ],
+      "Top Anime Sagas": [
+        { tmdbId: 1429, type: 'tv', title: 'Attack on Titan', year: 2013, order: 1 },
+        { tmdbId: 85937, type: 'tv', title: 'Demon Slayer: Kimetsu no Yaiba', year: 2019, order: 2 },
+        { tmdbId: 95479, type: 'tv', title: 'Jujutsu Kaisen', year: 2020, order: 3 },
+        { tmdbId: 46260, type: 'tv', title: 'Death Note', year: 2006, order: 4 },
+        { tmdbId: 372058, type: 'movie', title: 'Your Name.', year: 2016, order: 5 },
+        { tmdbId: 129, type: 'movie', title: 'Spirited Away', year: 2001, order: 6 }
+      ],
+      "The Dark Knight Trilogy": [
+        { tmdbId: 272, type: 'movie', title: 'Batman Begins', year: 2005, order: 1 },
+        { tmdbId: 155, type: 'movie', title: 'The Dark Knight', year: 2008, order: 2 },
+        { tmdbId: 49026, type: 'movie', title: 'The Dark Knight Rises', year: 2012, order: 3 }
+      ]
+    };
+
+    let userState = {
+      watchlist: {},
+      watched: { '157336': { rating: 5, notes: 'Masterpiece' } },
+      activeMediaType: 'all',
+      activeGenre: 'all',
+      activeFranchiseCategory: 'all',
+      tasteChangerActive: false,
+      currentView: 'home',
+      libraryTab: 'watchlist'
+    };
+
+    function loadState() {
+      const s = localStorage.getItem('nxtcue_user_state');
+      if (s) {
+        try { userState = JSON.parse(s); } catch(e) {}
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem('nxtcue_user_state', JSON.stringify(userState));
+      updateCounts();
+    }
+
+    function toggleAccountDrawer() {
+      const drawer = document.getElementById('account-drawer');
+      drawer.classList.toggle('hidden');
+    }
+
+    async function tmdbFetch(endpoint, params = {}) {
+      const q = new URLSearchParams({ api_key: TMDB_API_KEY, ...params });
+      try {
+        const res = await fetch(`${TMDB_BASE_URL}${endpoint}?${q}`);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return await res.json();
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function normalizeTmdbItem(item, explicitType = null) {
+      const isMovie = explicitType === 'movie' || item.media_type === 'movie' || !!item.title;
+      const type = explicitType || item.media_type || (isMovie ? 'movie' : 'tv');
+      const title = isMovie ? item.title : item.name;
+      const releaseDate = isMovie ? item.release_date : item.first_air_date;
+      const year = releaseDate ? releaseDate.substring(0, 4) : 'N/A';
+      
+      const poster = item.poster_path ? getSafeImageUrl(item.poster_path, 'w500') : generateFallbackPoster(title, type);
+      const backdrop = item.backdrop_path ? getSafeImageUrl(item.backdrop_path, 'w1280') : generateFallbackBackdrop(title);
+
+      const genreMap = { 28: 'Action', 878: 'Sci-Fi', 53: 'Thriller', 18: 'Drama', 16: 'Anime', 35: 'Comedy', 80: 'Crime', 14: 'Fantasy', 12: 'Adventure' };
+      const genres = (item.genre_ids || []).map(id => genreMap[id]).filter(Boolean);
+      if (!genres.length) genres.push(type === 'anime' ? 'Anime' : (isMovie ? 'Cinema' : 'Series'));
+
+      return {
+        id: String(item.id),
+        tmdbId: item.id,
+        title: title || 'Untitled',
+        type: type,
+        year: year,
+        ratingTmdb: item.vote_average ? Number(item.vote_average.toFixed(1)) : 7.5,
+        poster: poster,
+        backdrop: backdrop,
+        overview: item.overview || 'No synopsis available.',
+        genres: genres
+      };
+    }
+
+    function calculateNextCueScore(item) {
+      if (userState.watched[item.id]) return { score: 0, reason: 'Already watched' };
+      let score = 55 + (item.ratingTmdb - 6.5) * 8;
+      const r = item.ratingTmdb >= 8.0 ? 'Critically acclaimed global favorite' : 'Matches your taste profile';
+      return { score: Math.min(99, Math.max(50, Math.round(score))), reason: r };
+    }
+
+    function renderHero() {
+      const el = document.getElementById('hero-section');
+      const unwatched = CATALOG.filter(c => !userState.watched[c.id]);
+      if (!unwatched.length) {
+        el.innerHTML = '<div class="p-12 text-center text-gray-400"><h3 class="text-2xl font-bold text-white">All caught up!</h3></div>';
+        return;
+      }
+      let best = unwatched[0];
+      let bestScore = calculateNextCueScore(best).score;
+      unwatched.forEach(i => {
+        const sc = calculateNextCueScore(i).score;
+        if (sc > bestScore) { best = i; bestScore = sc; }
+      });
+      const calc = calculateNextCueScore(best);
+      const inWl = !!userState.watchlist[best.id];
+      const safeBackdrop = best.backdrop || (best.backdropPath ? getSafeImageUrl(best.backdropPath, 'w1280') : generateFallbackBackdrop(best.title));
+
+      el.innerHTML = `
+        <div class="relative h-[440px] sm:h-[480px] w-full">
+          <img src="${safeBackdrop}" onerror="this.onerror=null; this.src=generateFallbackBackdrop('${best.title.replace(/'/g, "")}');" class="absolute inset-0 w-full h-full object-cover object-center filter brightness-50" />
+          <div class="absolute inset-0 bg-gradient-to-t from-surface-base via-surface-base/60 to-transparent"></div>
+          <div class="absolute inset-x-0 bottom-0 p-6 sm:p-10 space-y-4 max-w-3xl">
+            <div class="flex items-center space-x-3">
+              <span class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-extrabold spectrum-gradient text-white spectrum-border-glow">
+                🎯 ${calc.score}% NxtCue Match
+              </span>
+              <span class="text-xs uppercase tracking-wider font-semibold text-gray-300 bg-black/60 px-2.5 py-1 rounded border border-surface-border">${best.type} • ${best.year}</span>
+              <span class="text-xs text-amber-400 font-bold">★ ${best.ratingTmdb} TMDB</span>
+            </div>
+            <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">${best.title}</h2>
+            <p class="text-xs sm:text-sm text-gray-300 line-clamp-2 sm:line-clamp-3">${best.overview}</p>
+            <div class="bg-surface-card/90 border border-nxt-purple/40 rounded-xl p-3 flex items-center space-x-2">
+              <span class="text-nxt-cyan text-sm">💡</span>
+              <p class="text-xs text-gray-200 font-medium"><strong>Why this cue:</strong> ${calc.reason}</p>
+            </div>
+            <div class="flex items-center space-x-3 pt-2">
+              <button onclick="toggleWatchlist('${best.id}')" class="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition ${inWl ? 'bg-emerald-600 text-white' : 'spectrum-gradient text-white shadow-lg spectrum-border-glow hover:opacity-95'}">
+                <span>${inWl ? '✓ In Watchlist' : '+ Add to Watchlist'}</span>
+              </button>
+              <button onclick="toggleWatched('${best.id}')" class="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-surface-elevated hover:bg-surface-border text-gray-200 border border-surface-border transition">
+                <span>✓ Mark as Watched</span>
+              </button>
+              <button onclick="openModal('${best.id}')" class="px-4 py-2.5 rounded-xl font-semibold text-xs sm:text-sm text-gray-300 hover:text-white transition">
+                ▶ Details & Trailer
+              </button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function createCardHTML(item, score) {
+      const isW = !!userState.watched[item.id];
+      const isWl = !!userState.watchlist[item.id];
+      const safePoster = item.poster || (item.posterPath ? getSafeImageUrl(item.posterPath, 'w500') : generateFallbackPoster(item.title, item.type));
+      const safeTitleEscaped = item.title.replace(/'/g, "");
+
+      return `
+        <div onclick="openModal('${item.id}')" class="group relative flex-none w-36 sm:w-44 cursor-pointer transition duration-300 transform hover:-translate-y-1">
+          <div class="relative aspect-[2/3] rounded-2xl overflow-hidden bg-surface-elevated border border-surface-border shadow-md group-hover:border-nxt-purple/60 transition">
+            <img src="${safePoster}" onerror="this.onerror=null; this.src=generateFallbackPoster('${safeTitleEscaped}', '${item.type}');" alt="${item.title}" loading="lazy" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" />
+            ${score ? `<div class="absolute top-2 right-2 bg-black/80 backdrop-blur-md px-2 py-0.5 rounded-full border border-nxt-purple/50 text-[10px] font-bold text-nxt-cyan">${score}%</div>` : ''}
+            ${isW ? `<div class="absolute top-2 left-2 bg-emerald-500/90 text-white text-[9px] font-bold px-2 py-0.5 rounded-full">Watched</div>` : isWl ? `<div class="absolute top-2 left-2 spectrum-gradient text-white text-[9px] font-bold px-2 py-0.5 rounded-full">Watchlist</div>` : ''}
+            <div class="absolute bottom-0 inset-x-0 p-2.5 bg-gradient-to-t from-black via-black/80 to-transparent">
+              <h3 class="text-xs font-bold text-white truncate">${item.title}</h3>
+              <p class="text-[10px] text-gray-400 capitalize">${item.type} • ★ ${item.ratingTmdb}</p>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderCarousels() {
+      let filtered = CATALOG;
+      if (userState.activeMediaType !== 'all') {
+        filtered = CATALOG.filter(c => c.type === userState.activeMediaType);
+      }
+      if (userState.activeGenre !== 'all') {
+        filtered = filtered.filter(c => c.genres && c.genres.some(g => g.toLowerCase().includes(userState.activeGenre.toLowerCase())));
+      }
+
+      const topCues = [...filtered].filter(c => !userState.watched[c.id]).map(c => ({ item: c, ...calculateNextCueScore(c) })).sort((a,b) => b.score - a.score);
+      document.getElementById('top-cues-carousel').innerHTML = topCues.length ? topCues.map(d => createCardHTML(d.item, d.score)).join('') : '<p class="text-xs text-gray-500 py-4 px-2">No unwatched titles match this mood filter.</p>';
+
+      const changer = [...filtered].filter(c => !userState.watched[c.id] && c.ratingTmdb >= 8.3).sort((a,b) => b.ratingTmdb - a.ratingTmdb);
+      document.getElementById('taste-changer-carousel').innerHTML = changer.length ? changer.map(i => createCardHTML(i, Math.round(i.ratingTmdb * 10))).join('') : '<p class="text-xs text-gray-500 py-4 px-2">No Taste Changer matches in this category.</p>';
+
+      const trend = [...filtered].sort((a,b) => b.ratingTmdb - a.ratingTmdb);
+      document.getElementById('trending-carousel').innerHTML = trend.map(i => createCardHTML(i, null)).join('');
+    }
+
+    function renderStarButtons(itemId, currentRating) {
+      let html = '';
+      for (let s = 1; s <= 5; s++) {
+        const starColor = s <= currentRating ? 'text-amber-400' : 'text-gray-600';
+        html += '<button onclick="setRating(\'' + itemId + '\', ' + s + '); openModal(\'' + itemId + '\');" class="text-base ' + starColor + ' hover:scale-110 transition">★</button>';
+      }
+      return html;
+    }
+
+    async function openModal(id) {
+      let item = CATALOG.find(c => c.id === id) || userState.watchlist[id] || userState.watched[id]?.item;
+      if (!item) return;
+
+      const isW = !!userState.watched[item.id];
+      const isWl = !!userState.watchlist[item.id];
+      const rating = userState.watched[item.id]?.rating || 0;
+      const calc = calculateNextCueScore(item);
+
+      let trailerKey = null;
+      try {
+        const endpoint = item.type === 'movie' ? `/movie/${item.tmdbId}/videos` : `/tv/${item.tmdbId}/videos`;
+        const videoData = await tmdbFetch(endpoint);
+        if (videoData && videoData.results) {
+          const tr = videoData.results.find(v => v.site === 'YouTube' && (v.type === 'Trailer' || v.type === 'Teaser'));
+          if (tr) trailerKey = tr.key;
+        }
+      } catch(e) {}
+
+      let director = 'N/A';
+      let castNames = [];
+      let runtimeStr = '';
+      try {
+        const detailsEndpoint = item.type === 'movie' ? `/movie/${item.tmdbId}` : `/tv/${item.tmdbId}`;
+        const creditsEndpoint = item.type === 'movie' ? `/movie/${item.tmdbId}/credits` : `/tv/${item.tmdbId}/credits`;
+        
+        const [det, creds] = await Promise.all([tmdbFetch(detailsEndpoint), tmdbFetch(creditsEndpoint)]);
+        if (det) {
+          if (det.runtime) {
+            const h = Math.floor(det.runtime / 60);
+            const m = det.runtime % 60;
+            runtimeStr = (h > 0 ? h + 'h ' : '') + m + 'm';
+          } else if (det.number_of_seasons) {
+            runtimeStr = det.number_of_seasons + (det.number_of_seasons > 1 ? ' Seasons' : ' Season');
+          }
+        }
+        if (creds) {
+          if (creds.crew) {
+            const dir = creds.crew.find(c => c.job === 'Director');
+            if (dir) director = dir.name;
+          }
+          if (creds.cast) {
+            castNames = creds.cast.slice(0, 4).map(c => c.name);
+          }
+        }
+      } catch (err) {}
+
+      let providersHtml = '';
+      try {
+        const provEndpoint = item.type === 'movie' ? `/movie/${item.tmdbId}/watch/providers` : `/tv/${item.tmdbId}/watch/providers`;
+        const provData = await tmdbFetch(provEndpoint);
+        if (provData && provData.results && provData.results.IN && provData.results.IN.flatrate) {
+          const streamList = provData.results.IN.flatrate;
+          providersHtml = streamList.map(p => `
+            <div class="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-surface-base border border-surface-border text-xs font-semibold text-white">
+              <img src="${getSafeImageUrl(p.logo_path, 'w45')}" class="w-4 h-4 rounded" />
+              <span>${p.provider_name}</span>
+            </div>
+          `).join('');
+        }
+      } catch (e) {}
+
+      if (!providersHtml) {
+        providersHtml = `
+          <a href="https://www.google.com/search?q=where+to+stream+${encodeURIComponent(item.title)}+in+india" target="_blank" class="text-xs text-nxt-cyan hover:underline font-semibold">
+            Check Streaming Availability in India ↗
+          </a>
+        `;
+      }
+
+      const safeBackdrop = item.backdrop || (item.backdropPath ? getSafeImageUrl(item.backdropPath, 'w1280') : generateFallbackBackdrop(item.title));
+      const safeTitleEscaped = item.title.replace(/'/g, "");
+
+      const modalEl = document.getElementById('title-modal');
+      document.getElementById('modal-content').innerHTML = `
+        <div class="relative aspect-video w-full bg-black">
+          ${trailerKey ? `
+            <iframe src="https://www.youtube-nocookie.com/embed/${trailerKey}?autoplay=1&mute=1&rel=0" class="w-full h-full" frameborder="0" allowfullscreen></iframe>
+          ` : `
+            <img src="${safeBackdrop}" onerror="this.onerror=null; this.src=generateFallbackBackdrop('${safeTitleEscaped}');" class="w-full h-full object-cover brightness-60" />
+            <div class="absolute inset-0 bg-gradient-to-t from-surface-card to-transparent"></div>
+            <div class="absolute bottom-4 left-6 right-6">
+              <span class="text-xs uppercase font-bold spectrum-gradient px-2 py-0.5 rounded text-white">${item.type}</span>
+              <h2 class="text-2xl font-bold text-white mt-1">${item.title}</h2>
+            </div>
+          `}
+        </div>
+
+        <div class="p-6 space-y-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <h2 class="text-xl sm:text-2xl font-extrabold text-white">${item.title}</h2>
+              <p class="text-xs text-gray-400 mt-0.5">
+                ${item.year} ${runtimeStr ? '• ' + runtimeStr : ''} • TMDB: <span class="text-amber-400 font-bold">★ ${item.ratingTmdb}</span>
+              </p>
+            </div>
+            <div class="text-right">
+              <div class="text-lg font-black spectrum-text">${calc.score}%</div>
+              <span class="text-[10px] text-gray-400 uppercase">Match</span>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-surface-elevated border border-nxt-purple/40 flex items-center space-x-2">
+            <span class="text-nxt-cyan text-sm">💡</span>
+            <p class="text-xs text-gray-200 font-medium"><strong>Why this cue:</strong> ${calc.reason}</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            ${director !== 'N/A' ? `<div><span class="text-gray-500 font-medium">Director:</span> <span class="text-gray-200 font-semibold">${director}</span></div>` : ''}
+            ${castNames.length ? `<div><span class="text-gray-500 font-medium">Starring:</span> <span class="text-gray-200 font-semibold">${castNames.join(', ')}</span></div>` : ''}
+          </div>
+
+          <div>
+            <h4 class="text-xs font-bold text-gray-400 uppercase mb-1">Synopsis</h4>
+            <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">${item.overview}</p>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-surface-elevated border border-surface-border space-y-2">
+            <div class="flex items-center space-x-2">
+              <span class="text-sm">📺</span>
+              <span class="text-xs font-bold text-gray-200">Streaming in India:</span>
+            </div>
+            <div class="flex flex-wrap gap-2 items-center">
+              ${providersHtml}
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-surface-border space-y-3">
+            <div class="flex items-center space-x-3">
+              <button onclick="toggleWatchlist('${item.id}'); openModal('${item.id}');" class="flex-1 py-2.5 rounded-xl text-xs font-bold border transition ${isWl ? 'spectrum-gradient text-white border-transparent' : 'bg-surface-elevated border-surface-border text-gray-200 hover:text-white'}">
+                ${isWl ? '✓ In Watchlist' : '+ Add to Watchlist'}
+              </button>
+              <button onclick="toggleWatched('${item.id}'); openModal('${item.id}');" class="flex-1 py-2.5 rounded-xl text-xs font-bold border transition ${isW ? 'bg-emerald-600 border-emerald-500 text-white' : 'bg-surface-elevated border-surface-border text-gray-200 hover:text-white'}">
+                ${isW ? '✓ Marked Watched' : 'Mark as Watched'}
+              </button>
+            </div>
+            ${isW ? `
+              <div class="p-3 bg-surface-elevated rounded-xl flex items-center justify-between">
+                <span class="text-xs text-gray-300 font-medium">Rate this title:</span>
+                <div class="flex space-x-1">
+                  ${renderStarButtons(item.id, rating)}
+                </div>
+              </div>` : ''}
+          </div>
+        </div>`;
+      modalEl.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('modal-content').innerHTML = '';
+      document.getElementById('title-modal').classList.add('hidden');
+    }
+
+    let searchTimer = null;
+    function handleLiveSearch(q) {
+      clearTimeout(searchTimer);
+      if (!q || q.trim().length < 2) { closeSearchResults(); return; }
+      searchTimer = setTimeout(async () => {
+        const res = await tmdbFetch('/search/multi', { query: q.trim() });
+        if (res && res.results) {
+          const sec = document.getElementById('search-results-section');
+          const grid = document.getElementById('search-results-grid');
+          document.getElementById('search-query-display').innerText = '"' + q + '"';
+          sec.classList.remove('hidden');
+          const valid = res.results.filter(r => (r.media_type === 'movie' || r.media_type === 'tv')).map(r => normalizeTmdbItem(r));
+          valid.forEach(i => { if (!CATALOG.some(c => c.id === i.id)) CATALOG.push(i); });
+          grid.innerHTML = valid.length ? valid.map(i => createCardHTML(i, null)).join('') : '<p class="text-xs text-gray-400 col-span-full py-4">No results found.</p>';
+        }
+      }, 350);
+    }
+
+    function closeSearchResults() {
+      document.getElementById('search-results-section').classList.add('hidden');
+      document.getElementById('search-input').value = '';
+    }
+
+    function filterFranchises(cat) {
+      userState.activeFranchiseCategory = cat;
+      document.querySelectorAll('.f-pill').forEach(b => {
+        b.classList.remove('bg-surface-elevated', 'text-white', 'border-nxt-purple/40', 'font-bold');
+        b.classList.add('bg-surface-card', 'text-gray-400', 'border-surface-border', 'font-medium');
+      });
+      event.target.classList.remove('bg-surface-card', 'text-gray-400', 'border-surface-border', 'font-medium');
+      event.target.classList.add('bg-surface-elevated', 'text-white', 'border-nxt-purple/40', 'font-bold');
+      renderFranchises();
+    }
+
+    function renderFranchises() {
+      const container = document.getElementById('franchises-list');
+      let html = '';
+
+      for (const [fName, titles] of Object.entries(FRANCHISE_DEFINITIONS)) {
+        if (userState.activeFranchiseCategory !== 'all') {
+          if (!fName.toLowerCase().includes(userState.activeFranchiseCategory.toLowerCase())) continue;
+        }
+
+        const watchedCount = titles.filter(t => userState.watched[String(t.tmdbId)]).length;
+        const totalCount = titles.length;
+        const percent = Math.round((watchedCount / totalCount) * 100);
+        const nextUpItem = titles.find(t => !userState.watched[String(t.tmdbId)]);
+
+        html += `
+          <div class="bg-surface-card border border-surface-border rounded-2xl p-5 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h3 class="text-base font-bold text-white">${fName}</h3>
+                <p class="text-xs text-gray-400">${watchedCount} of ${totalCount} completed (${percent}%)</p>
+              </div>
+              <div class="w-full sm:w-48 bg-surface-elevated rounded-full h-2 overflow-hidden border border-surface-border">
+                <div class="spectrum-gradient h-full transition-all duration-500" style="width: ${percent}%"></div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">`;
+
+        for (const fItem of titles) {
+          let itm = CATALOG.find(c => c.tmdbId === fItem.tmdbId) || CATALOG.find(c => c.title.toLowerCase() === fItem.title.toLowerCase());
+          const isW = !!userState.watched[String(fItem.tmdbId)];
+          const isNext = nextUpItem && nextUpItem.tmdbId === fItem.tmdbId;
+
+          const titleText = itm ? itm.title : fItem.title;
+          const yearText = itm ? itm.year : fItem.year;
+          const ratingText = itm ? itm.ratingTmdb : '8.0';
+          const safePoster = itm ? itm.poster : generateFallbackPoster(fItem.title, fItem.type);
+          const safeTitleEscaped = titleText.replace(/'/g, "");
+
+          html += `
+            <div onclick="openModal('${itm ? itm.id : fItem.tmdbId}')" class="flex items-center space-x-3 p-2.5 rounded-xl border ${isW ? 'border-emerald-500/30 bg-emerald-500/5' : isNext ? 'border-nxt-coral/60 bg-nxt-coral/10 shadow-lg' : 'border-surface-border bg-surface-elevated'} cursor-pointer hover:border-nxt-purple/50 transition">
+              <img src="${safePoster}" onerror="this.onerror=null; this.src=generateFallbackPoster('${safeTitleEscaped}', '${fItem.type}');" class="w-12 h-16 rounded-lg object-cover flex-shrink-0" />
+              <div class="overflow-hidden flex-grow">
+                <div class="flex items-center space-x-1.5">
+                  <span class="text-xs font-bold text-gray-400">#${fItem.order}</span>
+                  <h4 class="text-xs font-bold text-white truncate">${titleText}</h4>
+                </div>
+                <p class="text-[10px] text-gray-400">${yearText} • ★ ${ratingText}</p>
+                <div class="pt-0.5">
+                  ${isW ? `
+                    <span class="text-[10px] font-bold text-emerald-400">✓ Watched</span>
+                  ` : isNext ? `
+                    <span class="text-[10px] font-black text-nxt-coral uppercase tracking-wider animate-pulse">🎯 Next Up to Watch</span>
+                  ` : `
+                    <span class="text-[10px] text-gray-500 font-medium">Upcoming in saga</span>
+                  `}
+                </div>
+              </div>
+            </div>`;
+        }
+
+        html += `</div></div>`;
+      }
+
+      container.innerHTML = html || '<p class="text-xs text-gray-400 py-6 text-center">No franchises found in this category.</p>';
+    }
+
+    function renderLibrary() {
+      const grid = document.getElementById('library-grid');
+      const isWl = userState.libraryTab === 'watchlist';
+      const source = isWl ? userState.watchlist : userState.watched;
+      const ids = Object.keys(source);
+
+      if (!ids.length) {
+        grid.innerHTML = '<div class="col-span-full py-16 text-center text-gray-500"><p class="text-sm">No titles in your ' + (isWl ? 'Watchlist' : 'Watched history') + ' yet.</p></div>';
+        return;
+      }
+
+      grid.innerHTML = ids.map(id => {
+        let itm = CATALOG.find(c => c.id === id) || (isWl ? source[id] : source[id]?.item);
+        if (!itm) return '';
+        const r = userState.watched[id]?.rating;
+        const safeP = itm.poster || (itm.posterPath ? getSafeImageUrl(itm.posterPath, 'w500') : generateFallbackPoster(itm.title, itm.type));
+        const safeTitleEscaped = itm.title.replace(/'/g, "");
+        return `
+          <div onclick="openModal('${itm.id}')" class="bg-surface-card border border-surface-border rounded-xl overflow-hidden cursor-pointer hover:border-nxt-purple transition">
+            <img src="${safeP}" onerror="this.onerror=null; this.src=generateFallbackPoster('${safeTitleEscaped}', '${itm.type}');" class="w-full aspect-[2/3] object-cover" />
+            <div class="p-2.5">
+              <h4 class="text-xs font-bold text-white truncate">${itm.title}</h4>
+              <p class="text-[10px] text-gray-400">${itm.type} • ${itm.year}</p>
+              ${r ? `<p class="text-amber-400 text-xs font-bold mt-1">★ ${r}/5</p>` : ''}
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function exportUserDataJSON() {
+      const backupData = {
+        app: "NxtCue",
+        version: "1.0",
+        exportDate: new Date().toISOString(),
+        userState: userState
+      };
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `nxtcue_backup_${new Date().toISOString().slice(0,10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    function exportUserDataCSV() {
+      let csvContent = "data:text/csv;charset=utf-8,Type,Title,Year,Status,Rating,TMDB_ID\n";
+      Object.keys(userState.watchlist).forEach(id => {
+        const item = userState.watchlist[id] || CATALOG.find(c => c.id === id) || {};
+        const safeTitle = (item.title || 'Untitled').replace(/"/g, '""');
+        csvContent += `"${item.type || 'movie'}","${safeTitle}","${item.year || ''}","Watchlist","","${item.tmdbId || id}"\n`;
+      });
+      Object.keys(userState.watched).forEach(id => {
+        const item = userState.watched[id]?.item || CATALOG.find(c => c.id === id) || {};
+        const safeTitle = (item.title || 'Untitled').replace(/"/g, '""');
+        const rating = userState.watched[id]?.rating || '';
+        csvContent += `"${item.type || 'movie'}","${safeTitle}","${item.year || ''}","Watched","${rating}","${item.tmdbId || id}"\n`;
+      });
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `nxtcue_library_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+
+    function importUserDataJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (imported.userState) userState = imported.userState;
+          else if (imported.watchlist && imported.watched) {
+            userState.watchlist = imported.watchlist;
+            userState.watched = imported.watched;
+          } else {
+            alert("Unrecognized backup file format.");
+            return;
+          }
+          saveState();
+          alert("NxtCue library successfully restored!");
+          toggleAccountDrawer();
+          refreshUI();
+        } catch (err) {
+          alert("Error parsing backup JSON file.");
+        }
+      };
+      reader.read
