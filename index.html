@@ -26,7 +26,7 @@
     .carousel-container::-webkit-scrollbar { display: none; }
     .carousel-container { -ms-overflow-style: none; scrollbar-width: none; }
     .glass-nav {
-      background: rgba(5, 7, 10, 0.92);
+      background: rgba(5, 7, 10, 0.94);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
     }
@@ -48,11 +48,8 @@
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-purple-600 selection:text-white pb-24">
 
-  <!-- TOP NAVIGATION BAR -->
   <header class="fixed top-0 inset-x-0 z-40 glass-nav border-b border-surface-border/70 transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-      
-      <!-- Brand Logo -->
       <div class="flex items-center space-x-4 flex-shrink-0">
         <div class="flex items-center space-x-3 cursor-pointer" onclick="switchView('home')">
           <div class="w-10 h-10 rounded-2xl bg-surface-base border border-nxt-purple/40 logo-frame p-1 flex items-center justify-center relative overflow-hidden">
@@ -68,14 +65,11 @@
             </svg>
           </div>
           <div>
-            <h1 class="text-xl font-extrabold tracking-tight text-white flex items-center">
-              Nxt<span class="spectrum-text">Cue</span>
-            </h1>
+            <h1 class="text-xl font-extrabold tracking-tight text-white flex items-center">Nxt<span class="spectrum-text">Cue</span></h1>
             <p class="text-[9px] text-gray-400 font-semibold tracking-wider hidden sm:block -mt-1 uppercase">Smart Entertainment Companion</p>
           </div>
         </div>
 
-        <!-- Desktop Navigation Tabs -->
         <nav class="hidden md:flex items-center space-x-1">
           <button onclick="switchView('home')" id="nav-home" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold text-white bg-surface-elevated border border-surface-border transition">Home</button>
           <button onclick="switchView('franchises')" id="nav-franchises" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white transition">Franchises</button>
@@ -83,106 +77,76 @@
         </nav>
       </div>
 
-      <!-- Live Search Bar -->
       <div class="flex-grow max-w-md relative">
         <div class="relative">
           <span class="absolute inset-y-0 left-3 flex items-center text-gray-400 text-sm">🔍</span>
-          <input 
-            type="text" 
-            id="search-input" 
-            placeholder="Search movies, TV series, anime..." 
-            class="w-full pl-9 pr-4 py-2 rounded-full bg-surface-card border border-surface-border text-xs text-white placeholder-gray-500 focus:outline-none focus:border-nxt-purple focus:ring-1 focus:ring-nxt-purple transition shadow-inner"
-            oninput="handleLiveSearch(this.value)"
-          />
+          <input type="text" id="search-input" placeholder="Search movies, TV series, anime..." class="w-full pl-9 pr-4 py-2 rounded-full bg-surface-card border border-surface-border text-xs text-white placeholder-gray-500 focus:outline-none focus:border-nxt-purple focus:ring-1 focus:ring-nxt-purple transition shadow-inner" oninput="handleLiveSearch(this.value)" />
         </div>
       </div>
 
-      <!-- Right Controls: Taste Changer & Sleek Profile Avatar -->
       <div class="flex items-center space-x-3 flex-shrink-0">
         <button onclick="toggleTasteChanger()" id="taste-changer-btn" class="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-surface-card border border-surface-border text-gray-300 hover:border-nxt-coral hover:text-white transition">
           <span class="text-nxt-coral">⚡</span>
           <span class="hidden sm:inline">Taste Changer</span>
         </button>
-
-        <!-- Modern Profile Button -->
-        <button onclick="toggleAccountDrawer()" class="relative p-0.5 rounded-full spectrum-gradient hover:opacity-95 transition focus:outline-none" title="Account & Cloud Sync">
-          <div class="w-8 h-8 rounded-full bg-surface-base flex items-center justify-center text-xs font-bold text-white">
-            <span id="user-avatar-text">SR</span>
-          </div>
+        <button onclick="toggleAccountDrawer()" class="relative p-0.5 rounded-full spectrum-gradient hover:opacity-95 transition focus:outline-none" title="Account & Sync">
+          <div class="w-8 h-8 rounded-full bg-surface-base flex items-center justify-center text-xs font-bold text-white"><span>SR</span></div>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- SLIDE-OVER ACCOUNT & CLOUD SYNC DRAWER -->
-  <div id="account-drawer" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex justify-end hidden transition-opacity">
+  <div id="account-drawer" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex justify-end hidden">
     <div class="bg-surface-card border-l border-surface-border w-full max-w-md h-full p-6 space-y-6 overflow-y-auto flex flex-col justify-between shadow-2xl">
       <div class="space-y-6">
         <div class="flex items-center justify-between border-b border-surface-border pb-4">
           <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-full spectrum-gradient flex items-center justify-center font-bold text-white shadow-md">
-              SR
-            </div>
+            <div class="w-10 h-10 rounded-full spectrum-gradient flex items-center justify-center font-bold text-white shadow-md">SR</div>
             <div>
               <h3 class="text-sm font-bold text-white">My Account</h3>
-              <p class="text-[11px] text-nxt-cyan font-medium">Guest Mode (Local Cache)</p>
+              <p class="text-[11px] text-nxt-cyan font-medium">Guest Mode (Local Storage)</p>
             </div>
           </div>
           <button onclick="toggleAccountDrawer()" class="w-8 h-8 rounded-full bg-surface-elevated text-gray-400 hover:text-white flex items-center justify-center font-bold">✕</button>
         </div>
 
-        <!-- Cloud Sync Card -->
         <div class="p-4 rounded-2xl bg-surface-elevated border border-surface-border space-y-3">
           <div class="flex items-start space-x-3">
             <span class="text-lg">☁️</span>
             <div>
               <h4 class="text-xs font-bold text-white">Cloud Sync & Cross-Device Access</h4>
-              <p class="text-[11px] text-gray-400 mt-0.5">Sign in to sync your Watchlist and ratings between your laptop and phone automatically.</p>
+              <p class="text-[11px] text-gray-400 mt-0.5">Sign in to sync your Watchlist and ratings between your phone and laptop automatically.</p>
             </div>
           </div>
-          <button onclick="alert('Firebase Cloud Authentication will be activated on live hosting. Your data is currently safely backed up locally!')" class="w-full py-2 rounded-xl text-xs font-bold bg-white text-black hover:bg-gray-200 transition flex items-center justify-center space-x-2 shadow">
-            <span>Sign in with Google</span>
-          </button>
+          <button onclick="alert('Firebase Cloud Authentication is ready for deployment. Your data is currently safely backed up locally!')" class="w-full py-2 rounded-xl text-xs font-bold bg-white text-black hover:bg-gray-200 transition shadow">Sign in with Google</button>
         </div>
 
-        <!-- Data Management -->
         <div class="space-y-3 pt-2">
           <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400">Data Management</h4>
-          
           <div class="grid grid-cols-2 gap-2">
             <button onclick="exportUserDataJSON()" class="p-3 rounded-xl bg-surface-elevated border border-surface-border hover:border-nxt-cyan text-left transition">
               <span class="block text-xs font-bold text-white">Export JSON</span>
               <span class="text-[10px] text-gray-400">Full backup file</span>
             </button>
-
             <button onclick="exportUserDataCSV()" class="p-3 rounded-xl bg-surface-elevated border border-surface-border hover:border-nxt-cyan text-left transition">
               <span class="block text-xs font-bold text-white">Export CSV</span>
               <span class="text-[10px] text-gray-400">For Excel / Sheets</span>
             </button>
           </div>
-
           <div class="pt-2">
             <input type="file" id="import-file-input" accept=".json" class="hidden" onchange="importUserDataJSON(event)" />
-            <button onclick="document.getElementById('import-file-input').click()" class="w-full py-2.5 rounded-xl text-xs font-semibold bg-surface-elevated border border-surface-border hover:border-nxt-purple text-gray-200 text-center transition block">
-              Restore from Backup File (.json)
-            </button>
+            <button onclick="document.getElementById('import-file-input').click()" class="w-full py-2.5 rounded-xl text-xs font-semibold bg-surface-elevated border border-surface-border hover:border-nxt-purple text-gray-200 text-center transition block">Restore from Backup File (.json)</button>
           </div>
         </div>
       </div>
 
-      <!-- Danger Zone -->
       <div class="pt-6 border-t border-surface-border">
-        <button onclick="resetUserData()" class="w-full py-2 rounded-xl text-xs font-semibold text-rose-400 hover:bg-rose-500/10 border border-rose-500/30 transition">
-          Clear Local Library Cache
-        </button>
+        <button onclick="resetUserData()" class="w-full py-2 rounded-xl text-xs font-semibold text-rose-400 hover:bg-rose-500/10 border border-rose-500/30 transition">Clear Local Library Cache</button>
       </div>
     </div>
   </div>
 
-  <!-- MAIN CONTENT CONTAINER -->
   <main class="flex-grow pt-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-
-    <!-- SEARCH RESULTS SECTION -->
     <div id="search-results-section" class="hidden mb-10 space-y-4">
       <div class="flex items-center justify-between border-b border-surface-border pb-2">
         <h2 class="text-sm font-bold text-white flex items-center gap-2">
@@ -193,7 +157,6 @@
       <div id="search-results-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"></div>
     </div>
 
-    <!-- MEDIA TYPE SWITCHER PILLS -->
     <div class="flex items-center justify-between my-3 overflow-x-auto pb-1">
       <div class="flex items-center space-x-2">
         <button onclick="setMediaTypeFilter('all')" id="filter-all" class="type-filter-btn px-4 py-1.5 rounded-full text-xs font-bold spectrum-gradient text-white shadow-sm transition">All Media</button>
@@ -206,7 +169,6 @@
       </div>
     </div>
 
-    <!-- GENRE & MOOD FILTER BAR -->
     <div class="flex items-center space-x-1.5 overflow-x-auto pb-3 mb-2 text-xs">
       <span class="text-gray-500 font-semibold px-1 hidden sm:inline">Mood:</span>
       <button onclick="setGenreFilter('all')" id="genre-all" class="genre-pill-btn px-3 py-1 rounded-lg font-bold bg-surface-elevated text-white border border-nxt-purple/40 transition">All</button>
@@ -218,51 +180,31 @@
       <button onclick="setGenreFilter('Crime')" id="genre-Crime" class="genre-pill-btn px-3 py-1 rounded-lg font-medium bg-surface-card text-gray-400 hover:text-white border border-surface-border transition">🕵️ Crime & Mystery</button>
     </div>
 
-    <!-- HOME VIEW -->
     <div id="view-home" class="space-y-10">
-
-      <!-- HERO BANNER (TONIGHT'S TOP CUE) -->
       <section id="hero-section" class="relative rounded-3xl overflow-hidden border border-surface-border bg-gradient-to-t from-surface-card to-surface-base shadow-2xl transition-all duration-500 min-h-[440px] flex items-center justify-center"></section>
-
-      <!-- CAROUSEL 1: TONIGHT'S TOP CUES -->
       <section class="space-y-3">
         <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-2">
-            <span class="text-nxt-cyan font-bold text-lg">🎯</span>
-            <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">Top Cues Calculated For You</h2>
-          </div>
+          <div class="flex items-center space-x-2"><span class="text-nxt-cyan font-bold text-lg">🎯</span><h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">Top Cues Calculated For You</h2></div>
           <span class="text-xs text-gray-400">Personal taste engine</span>
         </div>
         <div id="top-cues-carousel" class="carousel-container flex space-x-4 overflow-x-auto py-2"></div>
       </section>
 
-      <!-- CAROUSEL 2: TASTE CHANGER -->
       <section class="space-y-3 p-5 rounded-2xl bg-gradient-to-r from-nxt-coral/15 via-surface-card to-surface-card border border-nxt-coral/30">
         <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-2">
-            <span class="text-nxt-coral font-bold text-lg">⚡</span>
-            <div>
-              <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">The Taste Changer</h2>
-              <p class="text-xs text-nxt-coral/80">Critically acclaimed gems outside your typical comfort zone</p>
-            </div>
-          </div>
+          <div class="flex items-center space-x-2"><span class="text-nxt-coral font-bold text-lg">⚡</span><div><h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">The Taste Changer</h2><p class="text-xs text-nxt-coral/80">Critically acclaimed gems outside your typical comfort zone</p></div></div>
         </div>
         <div id="taste-changer-carousel" class="carousel-container flex space-x-4 overflow-x-auto py-2"></div>
       </section>
 
-      <!-- CAROUSEL 3: TRENDING -->
       <section class="space-y-3">
         <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-2">
-            <span class="text-nxt-magenta font-bold text-lg">🔥</span>
-            <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">Trending Across The Globe</h2>
-          </div>
+          <div class="flex items-center space-x-2"><span class="text-nxt-magenta font-bold text-lg">🔥</span><h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">Trending Across The Globe</h2></div>
         </div>
         <div id="trending-carousel" class="carousel-container flex space-x-4 overflow-x-auto py-2"></div>
       </section>
     </div>
 
-    <!-- FRANCHISES VIEW (EXPANDED UNIVERSES) -->
     <div id="view-franchises" class="hidden space-y-8">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-border pb-4">
         <div>
@@ -278,11 +220,9 @@
           <button onclick="filterFranchises('Batman')" class="f-pill px-3 py-1 rounded-lg text-xs font-medium bg-surface-card text-gray-400 hover:text-white border border-surface-border">Batman</button>
         </div>
       </div>
-
       <div id="franchises-list" class="space-y-8"></div>
     </div>
 
-    <!-- LIBRARY VIEW -->
     <div id="view-library" class="hidden space-y-6">
       <div class="flex items-center justify-between border-b border-surface-border pb-4">
         <div>
@@ -294,36 +234,21 @@
           <button onclick="setLibraryTab('watched')" id="lib-tab-watched" class="px-3.5 py-1.5 rounded-md font-medium text-gray-400 hover:text-white">Watched</button>
         </div>
       </div>
-
       <div id="library-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
     </div>
 
-    <!-- FOOTER WITH MANDATORY TMDB ATTRIBUTION -->
     <footer class="mt-20 pt-8 border-t border-surface-border/50 text-center text-xs text-gray-500 space-y-2">
-      <p class="flex items-center justify-center gap-2">
-        <span class="spectrum-text font-bold">NxtCue</span> • Smart Personal Entertainment Discovery
-      </p>
-      <p class="text-[11px] text-gray-600">
-        This product uses the TMDB API but is not endorsed or certified by TMDB.
-      </p>
+      <p class="flex items-center justify-center gap-2"><span class="spectrum-text font-bold">NxtCue</span> • Smart Personal Entertainment Discovery</p>
+      <p class="text-[11px] text-gray-600">This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
     </footer>
-
   </main>
 
-  <!-- MOBILE BOTTOM NAVIGATION -->
   <nav class="md:hidden fixed bottom-0 inset-x-0 glass-nav border-t border-surface-border z-40 px-6 py-2 flex justify-around">
-    <button onclick="switchView('home')" class="flex flex-col items-center text-nxt-cyan text-xs font-semibold py-1">
-      <span class="text-lg">🏠</span><span>Home</span>
-    </button>
-    <button onclick="switchView('franchises')" class="flex flex-col items-center text-gray-400 text-xs font-medium py-1">
-      <span class="text-lg">🌌</span><span>Universes</span>
-    </button>
-    <button onclick="switchView('library')" class="flex flex-col items-center text-gray-400 text-xs font-medium py-1">
-      <span class="text-lg">📑</span><span>Library</span>
-    </button>
+    <button onclick="switchView('home')" class="flex flex-col items-center text-nxt-cyan text-xs font-semibold py-1"><span class="text-lg">🏠</span><span>Home</span></button>
+    <button onclick="switchView('franchises')" class="flex flex-col items-center text-gray-400 text-xs font-medium py-1"><span class="text-lg">🌌</span><span>Universes</span></button>
+    <button onclick="switchView('library')" class="flex flex-col items-center text-gray-400 text-xs font-medium py-1"><span class="text-lg">📑</span><span>Library</span></button>
   </nav>
 
-  <!-- DETAIL MODAL -->
   <div id="title-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
     <div class="bg-surface-card border border-surface-border rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
       <button onclick="closeModal()" class="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-black/70 text-white hover:bg-black flex items-center justify-center font-bold">✕</button>
@@ -337,8 +262,8 @@
 
     function getSafeImageUrl(path, size = 'w500') {
       if (!path) return '';
-      const tmdbUrl = 'https://image.tmdb.org/t/p/' + size + path;
-      return 'https://images.weserv.nl/?url=' + encodeURIComponent(tmdbUrl) + '&default=' + encodeURIComponent(tmdbUrl);
+      const cleanPath = path.startsWith('/') ? path : '/' + path;
+      return 'https://wsrv.nl/?url=image.tmdb.org/t/p/' + size + cleanPath;
     }
 
     function generateFallbackPoster(title, type) {
@@ -353,8 +278,8 @@
     }
 
     const INITIAL_CATALOG = [
-      { id: '157336', tmdbId: 157336, title: 'Interstellar', type: 'movie', year: '2014', ratingTmdb: 8.7, posterPath: '/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg', backdropPath: '/xJHokMbljvjADYdit5fK5VQsXEG.jpg', overview: 'When Earth becomes uninhabitable in the future, a farmer and ex-NASA pilot is tasked to pilot a spacecraft to find a new planet for humans.', genres: ['Sci-Fi', 'Drama'] },
-      { id: '27205', tmdbId: 27205, title: 'Inception', type: 'movie', year: '2010', ratingTmdb: 8.8, posterPath: '/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg', backdropPath: '/8ZTVqvKDQ8emSGUEMjsS4yHAwrp.jpg', overview: 'A thief who steals corporate secrets through dream-sharing technology is given the inverse task of planting an idea into a CEO\'s mind.', genres: ['Action', 'Sci-Fi'] },
+      { id: '157336', tmdbId: 157336, title: 'Interstellar', type: 'movie', year: '2014', ratingTmdb: 8.7, posterPath: '/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg', backdropPath: '/xJHokMbljvjADYdit5fK5VQsXEG.jpg', overview: 'When Earth becomes uninhabitable in the future, an ex-NASA pilot is tasked to pilot a spacecraft to find a new planet for humans.', genres: ['Sci-Fi', 'Drama'] },
+      { id: '27205', tmdbId: 27205, title: 'Inception', type: 'movie', year: '2010', ratingTmdb: 8.8, posterPath: '/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg', backdropPath: '/8ZTVqvKDQ8emSGUEMjsS4yHAwrp.jpg', overview: 'A thief who steals corporate secrets through dream-sharing technology is given the task of planting an idea into a CEO\'s mind.', genres: ['Action', 'Sci-Fi'] },
       { id: '496243', tmdbId: 496243, title: 'Parasite', type: 'movie', year: '2019', ratingTmdb: 8.5, posterPath: '/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg', backdropPath: '/hiKmpZMGZsrkA3cdce8a7Dpos1j.jpg', overview: 'Greed and class discrimination threaten the symbiotic relationship between the wealthy Park family and the destitute Kim clan.', genres: ['Thriller', 'Drama'] },
       { id: '1429', tmdbId: 1429, title: 'Attack on Titan', type: 'anime', year: '2013', ratingTmdb: 9.0, posterPath: '/hTP1DtLGFamjfu8WqjnuQdP1n4i.jpg', backdropPath: '/i8GQ9L5B8D24T5PZ77rUqA1mYhD.jpg', overview: 'After his hometown is destroyed, Eren Jaeger vows to cleanse the earth of the giant humanoid Titans.', genres: ['Anime', 'Action'] },
       { id: '85937', tmdbId: 85937, title: 'Demon Slayer: Kimetsu no Yaiba', type: 'anime', year: '2019', ratingTmdb: 8.7, posterPath: '/xUfRZu2mi8jH6SzQEJGP6tjBuYj.jpg', backdropPath: '/nTvM4mhqZlHIvUkI1gqfl89Teip.jpg', overview: 'Tanjiro sets out on the dangerous path of a Demon Slayer to avenge his family and cure his sister.', genres: ['Anime', 'Action'] },
@@ -367,48 +292,48 @@
 
     const FRANCHISE_DEFINITIONS = {
       "Marvel Cinematic Universe (Infinity Saga)": [
-        { tmdbId: 1771, type: 'movie', title: 'Captain America: The First Avenger', year: 2011, order: 1 },
-        { tmdbId: 1726, type: 'movie', title: 'Iron Man', year: 2008, order: 2 },
-        { tmdbId: 10138, type: 'movie', title: 'Iron Man 2', year: 2010, order: 3 },
-        { tmdbId: 10195, type: 'movie', title: 'Thor', year: 2011, order: 4 },
-        { tmdbId: 24428, type: 'movie', title: 'The Avengers', year: 2012, order: 5 },
-        { tmdbId: 100402, type: 'movie', title: 'Captain America: The Winter Soldier', year: 2014, order: 6 },
-        { tmdbId: 118340, type: 'movie', title: 'Guardians of the Galaxy', year: 2014, order: 7 },
-        { tmdbId: 271110, type: 'movie', title: 'Captain America: Civil War', year: 2016, order: 8 },
-        { tmdbId: 299536, type: 'movie', title: 'Avengers: Infinity War', year: 2018, order: 9 },
-        { tmdbId: 299534, type: 'movie', title: 'Avengers: Endgame', year: 2019, order: 10 }
+        { tmdbId: 1771, type: 'movie', title: 'Captain America: The First Avenger', year: 2011, posterPath: '/vSNxAJTlD0r02V9sPYRtEyYphWB.jpg', order: 1 },
+        { tmdbId: 1726, type: 'movie', title: 'Iron Man', year: 2008, posterPath: '/78lPtwv72eTNqFW9COBYI0dWDJa.jpg', order: 2 },
+        { tmdbId: 10138, type: 'movie', title: 'Iron Man 2', year: 2010, posterPath: '/6WBeq4jjqPhnfNpL0TII9E45ODn.jpg', order: 3 },
+        { tmdbId: 10195, type: 'movie', title: 'Thor', year: 2011, posterPath: '/prSfAi1xGrhLQNxVSUFh61xQ4Qx.jpg', order: 4 },
+        { tmdbId: 24428, type: 'movie', title: 'The Avengers', year: 2012, posterPath: '/RYMX2wcKCBAr24UyPD7xwmjaTn.jpg', order: 5 },
+        { tmdbId: 100402, type: 'movie', title: 'Captain America: The Winter Soldier', year: 2014, posterPath: '/tVFRpFw3xTed5nGQqW0PUKHxW9w.jpg', order: 6 },
+        { tmdbId: 118340, type: 'movie', title: 'Guardians of the Galaxy', year: 2014, posterPath: '/r2J02Z2OpNTctfOSN2Ydgii51I3.jpg', order: 7 },
+        { tmdbId: 271110, type: 'movie', title: 'Captain America: Civil War', year: 2016, posterPath: '/rAG1TbMaydQ8946uhZw971log3q.jpg', order: 8 },
+        { tmdbId: 299536, type: 'movie', title: 'Avengers: Infinity War', year: 2018, posterPath: '/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg', order: 9 },
+        { tmdbId: 299534, type: 'movie', title: 'Avengers: Endgame', year: 2019, posterPath: '/or06FN3Dka5tukK1e9sl16pB3iy.jpg', order: 10 }
       ],
       "Star Wars (Skywalker Saga)": [
-        { tmdbId: 1893, type: 'movie', title: 'Star Wars: Episode I - The Phantom Menace', year: 1999, order: 1 },
-        { tmdbId: 1894, type: 'movie', title: 'Star Wars: Episode II - Attack of the Clones', year: 2002, order: 2 },
-        { tmdbId: 1895, type: 'movie', title: 'Star Wars: Episode III - Revenge of the Sith', year: 2005, order: 3 },
-        { tmdbId: 330459, type: 'movie', title: 'Rogue One: A Star Wars Story', year: 2016, order: 4 },
-        { tmdbId: 11, type: 'movie', title: 'Star Wars: Episode IV - A New Hope', year: 1977, order: 5 },
-        { tmdbId: 1891, type: 'movie', title: 'Star Wars: Episode V - The Empire Strikes Back', year: 1980, order: 6 },
-        { tmdbId: 1892, type: 'movie', title: 'Star Wars: Episode VI - Return of the Jedi', year: 1983, order: 7 }
+        { tmdbId: 1893, type: 'movie', title: 'Star Wars: Episode I - The Phantom Menace', year: 1999, posterPath: '/6wkfovpn7Eq89qoSVfnQ1vSYLvc.jpg', order: 1 },
+        { tmdbId: 1894, type: 'movie', title: 'Star Wars: Episode II - Attack of the Clones', year: 2002, posterPath: '/oZNPzxqok5ObAtmJiiurGLq0BoC.jpg', order: 2 },
+        { tmdbId: 1895, type: 'movie', title: 'Star Wars: Episode III - Revenge of the Sith', year: 2005, posterPath: '/xfSAoBVPxtkXml5zP1xiTGixCVW.jpg', order: 3 },
+        { tmdbId: 330459, type: 'movie', title: 'Rogue One: A Star Wars Story', year: 2016, posterPath: '/i0YW1mAStBFeR03iJW7umMvo0AT.jpg', order: 4 },
+        { tmdbId: 11, type: 'movie', title: 'Star Wars: Episode IV - A New Hope', year: 1977, posterPath: '/6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg', order: 5 },
+        { tmdbId: 1891, type: 'movie', title: 'Star Wars: Episode V - The Empire Strikes Back', year: 1980, posterPath: '/nDA9Vs9nb2JuRq8GIEG9G792J2.jpg', order: 6 },
+        { tmdbId: 1892, type: 'movie', title: 'Star Wars: Episode VI - Return of the Jedi', year: 1983, posterPath: '/mDCBQNhR6R0PVF26UvVFD9jP9o.jpg', order: 7 }
       ],
       "The Wizarding World (Harry Potter)": [
-        { tmdbId: 671, type: 'movie', title: 'Harry Potter and the Philosopher\'s Stone', year: 2001, order: 1 },
-        { tmdbId: 672, type: 'movie', title: 'Harry Potter and the Chamber of Secrets', year: 2002, order: 2 },
-        { tmdbId: 673, type: 'movie', title: 'Harry Potter and the Prisoner of Azkaban', year: 2004, order: 3 },
-        { tmdbId: 674, type: 'movie', title: 'Harry Potter and the Goblet of Fire', year: 2005, order: 4 },
-        { tmdbId: 675, type: 'movie', title: 'Harry Potter and the Order of the Phoenix', year: 2007, order: 5 },
-        { tmdbId: 767, type: 'movie', title: 'Harry Potter and the Half-Blood Prince', year: 2009, order: 6 },
-        { tmdbId: 12444, type: 'movie', title: 'Harry Potter and the Deathly Hallows: Part 1', year: 2010, order: 7 },
-        { tmdbId: 12445, type: 'movie', title: 'Harry Potter and the Deathly Hallows: Part 2', year: 2011, order: 8 }
+        { tmdbId: 671, type: 'movie', title: 'Harry Potter and the Philosopher\'s Stone', year: 2001, posterPath: '/wuMc08IPKEatf9rnMNXvIDxqP4W.jpg', order: 1 },
+        { tmdbId: 672, type: 'movie', title: 'Harry Potter and the Chamber of Secrets', year: 2002, posterPath: '/sdEOH0992YZ02aAIi6mABC2Cc4C.jpg', order: 2 },
+        { tmdbId: 673, type: 'movie', title: 'Harry Potter and the Prisoner of Azkaban', year: 2004, posterPath: '/aWxwnYoe8p2d2fcxOqtvAtI72Rw.jpg', order: 3 },
+        { tmdbId: 674, type: 'movie', title: 'Harry Potter and the Goblet of Fire', year: 2005, posterPath: '/fECgtvtda0mO292ZaFY7NJ4QvUp.jpg', order: 4 },
+        { tmdbId: 675, type: 'movie', title: 'Harry Potter and the Order of the Phoenix', year: 2007, posterPath: '/5A9Gz6c52n908vI2t018vC5a6.jpg', order: 5 },
+        { tmdbId: 767, type: 'movie', title: 'Harry Potter and the Half-Blood Prince', year: 2009, posterPath: '/z7uo9zmQdQwlkemZ0DRvCv628rv.jpg', order: 6 },
+        { tmdbId: 12444, type: 'movie', title: 'Harry Potter and the Deathly Hallows: Part 1', year: 2010, posterPath: '/iGoXQrB9MoMjZtSDC8ZuQwNkd4x.jpg', order: 7 },
+        { tmdbId: 12445, type: 'movie', title: 'Harry Potter and the Deathly Hallows: Part 2', year: 2011, posterPath: '/da222MrUXAmHC6FwhnQY6cQvM4a.jpg', order: 8 }
       ],
       "Top Anime Sagas": [
-        { tmdbId: 1429, type: 'tv', title: 'Attack on Titan', year: 2013, order: 1 },
-        { tmdbId: 85937, type: 'tv', title: 'Demon Slayer: Kimetsu no Yaiba', year: 2019, order: 2 },
-        { tmdbId: 95479, type: 'tv', title: 'Jujutsu Kaisen', year: 2020, order: 3 },
-        { tmdbId: 46260, type: 'tv', title: 'Death Note', year: 2006, order: 4 },
-        { tmdbId: 372058, type: 'movie', title: 'Your Name.', year: 2016, order: 5 },
-        { tmdbId: 129, type: 'movie', title: 'Spirited Away', year: 2001, order: 6 }
+        { tmdbId: 1429, type: 'tv', title: 'Attack on Titan', year: 2013, posterPath: '/hTP1DtLGFamjfu8WqjnuQdP1n4i.jpg', order: 1 },
+        { tmdbId: 85937, type: 'tv', title: 'Demon Slayer: Kimetsu no Yaiba', year: 2019, posterPath: '/xUfRZu2mi8jH6SzQEJGP6tjBuYj.jpg', order: 2 },
+        { tmdbId: 95479, type: 'tv', title: 'Jujutsu Kaisen', year: 2020, posterPath: '/fHpKW7PpshL9h70j0q6m6Z7h8m3.jpg', order: 3 },
+        { tmdbId: 46260, type: 'tv', title: 'Death Note', year: 2006, posterPath: '/tHzv6rA07Wz8K34fQvV6w7g6m2.jpg', order: 4 },
+        { tmdbId: 372058, type: 'movie', title: 'Your Name.', year: 2016, posterPath: '/q719qXXEzOoYaps6qFsTeSaNdF.jpg', order: 5 },
+        { tmdbId: 129, type: 'movie', title: 'Spirited Away', year: 2001, posterPath: '/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg', order: 6 }
       ],
       "The Dark Knight Trilogy": [
-        { tmdbId: 272, type: 'movie', title: 'Batman Begins', year: 2005, order: 1 },
-        { tmdbId: 155, type: 'movie', title: 'The Dark Knight', year: 2008, order: 2 },
-        { tmdbId: 49026, type: 'movie', title: 'The Dark Knight Rises', year: 2012, order: 3 }
+        { tmdbId: 272, type: 'movie', title: 'Batman Begins', year: 2005, posterPath: '/4MpN4CiiBmhkoxzqZw5IIGR0Zkd.jpg', order: 1 },
+        { tmdbId: 155, type: 'movie', title: 'The Dark Knight', year: 2008, posterPath: '/qJ2tW6WMUDux911r6m7haRef0WH.jpg', order: 2 },
+        { tmdbId: 49026, type: 'movie', title: 'The Dark Knight Rises', year: 2012, posterPath: '/hrJUZDqM2c2i4w7n4N8w9Z3x4r.jpg', order: 3 }
       ]
     };
 
@@ -807,7 +732,7 @@
           const titleText = itm ? itm.title : fItem.title;
           const yearText = itm ? itm.year : fItem.year;
           const ratingText = itm ? itm.ratingTmdb : '8.0';
-          const safePoster = itm ? itm.poster : generateFallbackPoster(fItem.title, fItem.type);
+          const safePoster = fItem.posterPath ? getSafeImageUrl(fItem.posterPath, 'w500') : (itm ? itm.poster : generateFallbackPoster(fItem.title, fItem.type));
           const safeTitleEscaped = titleText.replace(/'/g, "");
 
           html += `
@@ -928,4 +853,143 @@
           alert("Error parsing backup JSON file.");
         }
       };
-      reader.read
+      reader.readAsText(file);
+    }
+
+    function resetUserData() {
+      if (confirm("Are you sure you want to clear your local NxtCue library and reset ratings?")) {
+        userState.watchlist = {};
+        userState.watched = {};
+        saveState();
+        toggleAccountDrawer();
+        refreshUI();
+      }
+    }
+
+    function toggleWatchlist(id) {
+      const itm = CATALOG.find(c => c.id === id);
+      if (userState.watchlist[id]) delete userState.watchlist[id];
+      else { userState.watchlist[id] = itm; delete userState.watched[id]; }
+      saveState(); refreshUI();
+    }
+
+    function toggleWatched(id) {
+      const itm = CATALOG.find(c => c.id === id);
+      if (userState.watched[id]) delete userState.watched[id];
+      else { userState.watched[id] = { rating: 5, notes: '', item: itm }; delete userState.watchlist[id]; }
+      saveState(); refreshUI();
+    }
+
+    function setRating(id, r) {
+      if (!userState.watched[id]) {
+        const itm = CATALOG.find(c => c.id === id);
+        userState.watched[id] = { rating: r, notes: '', item: itm };
+      } else { userState.watched[id].rating = r; }
+      saveState(); refreshUI();
+    }
+
+    function updateCounts() {
+      const wC = Object.keys(userState.watched).length;
+      const wlC = Object.keys(userState.watchlist).length;
+      document.getElementById('watched-stat').innerText = wC;
+      document.getElementById('watchlist-stat').innerText = wlC;
+      document.getElementById('lib-count').innerText = wC + wlC;
+    }
+
+    function setMediaTypeFilter(t) {
+      userState.activeMediaType = t;
+      document.querySelectorAll('.type-filter-btn').forEach(b => { 
+        b.classList.remove('spectrum-gradient', 'text-white'); 
+        b.classList.add('bg-surface-card', 'text-gray-400'); 
+      });
+      const ab = document.getElementById('filter-' + t);
+      if (ab) { 
+        ab.classList.remove('bg-surface-card', 'text-gray-400'); 
+        ab.classList.add('spectrum-gradient', 'text-white'); 
+      }
+      renderCarousels();
+    }
+
+    function setGenreFilter(genre) {
+      userState.activeGenre = genre;
+      document.querySelectorAll('.genre-pill-btn').forEach(b => {
+        b.classList.remove('bg-surface-elevated', 'text-white', 'border-nxt-purple/40', 'font-bold');
+        b.classList.add('bg-surface-card', 'text-gray-400', 'border-surface-border', 'font-medium');
+      });
+      const ab = document.getElementById('genre-' + genre);
+      if (ab) {
+        ab.classList.remove('bg-surface-card', 'text-gray-400', 'border-surface-border', 'font-medium');
+        ab.classList.add('bg-surface-elevated', 'text-white', 'border-nxt-purple/40', 'font-bold');
+      }
+      renderCarousels();
+    }
+
+    function switchView(v) {
+      userState.currentView = v;
+      ['home', 'franchises', 'library'].forEach(x => {
+        document.getElementById('view-' + x).classList.add('hidden');
+        const d = document.getElementById('nav-' + x);
+        if (d) { d.classList.remove('bg-surface-elevated', 'text-white'); d.classList.add('text-gray-400'); }
+      });
+      document.getElementById('view-' + v).classList.remove('hidden');
+      const ad = document.getElementById('nav-' + v);
+      if (ad) { ad.classList.remove('text-gray-400'); ad.classList.add('bg-surface-elevated', 'text-white'); }
+      if (v === 'franchises') renderFranchises();
+      if (v === 'library') renderLibrary();
+    }
+
+    function setLibraryTab(t) {
+      userState.libraryTab = t;
+      ['watchlist', 'watched'].forEach(tab => {
+        const btn = document.getElementById('lib-tab-' + tab);
+        if (btn) {
+          if (tab === t) {
+            btn.classList.add('bg-surface-elevated', 'text-white');
+            btn.classList.remove('text-gray-400');
+          } else {
+            btn.classList.remove('bg-surface-elevated', 'text-white');
+            btn.classList.add('text-gray-400');
+          }
+        }
+      });
+      renderLibrary();
+    }
+
+    function toggleTasteChanger() {
+      userState.tasteChangerActive = !userState.tasteChangerActive;
+      const btn = document.getElementById('taste-changer-btn');
+      if (userState.tasteChangerActive) {
+        btn.classList.add('border-nxt-coral', 'text-nxt-coral', 'bg-nxt-coral/10');
+      } else {
+        btn.classList.remove('border-nxt-coral', 'text-nxt-coral', 'bg-nxt-coral/10');
+      }
+    }
+
+    function refreshUI() {
+      renderHero(); 
+      renderCarousels();
+      if (userState.currentView === 'franchises') renderFranchises();
+      if (userState.currentView === 'library') renderLibrary();
+      updateCounts();
+    }
+
+    async function startApp() {
+      loadState();
+      refreshUI();
+
+      try {
+        const tData = await tmdbFetch('/trending/all/day');
+        if (tData && tData.results && tData.results.length > 0) {
+          tData.results.forEach(r => {
+            const itm = normalizeTmdbItem(r);
+            if (!CATALOG.some(c => c.id === itm.id)) CATALOG.push(itm);
+          });
+          refreshUI();
+        }
+      } catch (err) {}
+    }
+
+    startApp();
+  </script>
+</body>
+</html>
