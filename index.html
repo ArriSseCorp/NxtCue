@@ -182,26 +182,50 @@
 
     <div id="view-home" class="space-y-10">
       <section id="hero-section" class="relative rounded-3xl overflow-hidden border border-surface-border bg-gradient-to-t from-surface-card to-surface-base shadow-2xl transition-all duration-500 min-h-[440px] flex items-center justify-center"></section>
+      
       <section class="space-y-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-2"><span class="text-nxt-cyan font-bold text-lg">🎯</span><h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">Top Cues Calculated For You</h2></div>
-          <span class="text-xs text-gray-400">Personal taste engine</span>
+          <div class="flex items-center space-x-2">
+            <button onclick="scrollCarousel('top-cues-carousel', -600)" class="w-8 h-8 rounded-full bg-surface-elevated hover:bg-surface-border text-gray-300 hover:text-white border border-surface-border flex items-center justify-center font-bold text-sm shadow transition">‹</button>
+            <button onclick="scrollCarousel('top-cues-carousel', 600)" class="w-8 h-8 rounded-full bg-surface-elevated hover:bg-surface-border text-gray-300 hover:text-white border border-surface-border flex items-center justify-center font-bold text-sm shadow transition">›</button>
+          </div>
         </div>
-        <div id="top-cues-carousel" class="carousel-container flex space-x-4 overflow-x-auto py-2"></div>
+        <div class="relative group">
+          <button onclick="scrollCarousel('top-cues-carousel', -600)" class="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-16 bg-black/70 hover:bg-black/90 text-white items-center justify-center rounded-r-xl opacity-0 group-hover:opacity-100 transition duration-300 text-xl font-bold backdrop-blur-sm border border-surface-border">‹</button>
+          <div id="top-cues-carousel" class="carousel-container flex space-x-4 overflow-x-auto py-2 scroll-smooth"></div>
+          <button onclick="scrollCarousel('top-cues-carousel', 600)" class="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-16 bg-black/70 hover:bg-black/90 text-white items-center justify-center rounded-l-xl opacity-0 group-hover:opacity-100 transition duration-300 text-xl font-bold backdrop-blur-sm border border-surface-border">›</button>
+        </div>
       </section>
 
       <section class="space-y-3 p-5 rounded-2xl bg-gradient-to-r from-nxt-coral/15 via-surface-card to-surface-card border border-nxt-coral/30">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-2"><span class="text-nxt-coral font-bold text-lg">⚡</span><div><h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">The Taste Changer</h2><p class="text-xs text-nxt-coral/80">Critically acclaimed gems outside your typical comfort zone</p></div></div>
+          <div class="flex items-center space-x-2">
+            <button onclick="scrollCarousel('taste-changer-carousel', -600)" class="w-8 h-8 rounded-full bg-surface-elevated hover:bg-surface-border text-nxt-coral hover:text-white border border-nxt-coral/40 flex items-center justify-center font-bold text-sm shadow transition">‹</button>
+            <button onclick="scrollCarousel('taste-changer-carousel', 600)" class="w-8 h-8 rounded-full bg-surface-elevated hover:bg-surface-border text-nxt-coral hover:text-white border border-nxt-coral/40 flex items-center justify-center font-bold text-sm shadow transition">›</button>
+          </div>
         </div>
-        <div id="taste-changer-carousel" class="carousel-container flex space-x-4 overflow-x-auto py-2"></div>
+        <div class="relative group">
+          <button onclick="scrollCarousel('taste-changer-carousel', -600)" class="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-16 bg-black/70 hover:bg-black/90 text-nxt-coral items-center justify-center rounded-r-xl opacity-0 group-hover:opacity-100 transition duration-300 text-xl font-bold backdrop-blur-sm border border-surface-border">‹</button>
+          <div id="taste-changer-carousel" class="carousel-container flex space-x-4 overflow-x-auto py-2 scroll-smooth"></div>
+          <button onclick="scrollCarousel('taste-changer-carousel', 600)" class="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-16 bg-black/70 hover:bg-black/90 text-nxt-coral items-center justify-center rounded-l-xl opacity-0 group-hover:opacity-100 transition duration-300 text-xl font-bold backdrop-blur-sm border border-surface-border">›</button>
+        </div>
       </section>
 
       <section class="space-y-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-2"><span class="text-nxt-magenta font-bold text-lg">🔥</span><h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">Trending Across The Globe</h2></div>
+          <div class="flex items-center space-x-2">
+            <button onclick="scrollCarousel('trending-carousel', -600)" class="w-8 h-8 rounded-full bg-surface-elevated hover:bg-surface-border text-gray-300 hover:text-white border border-surface-border flex items-center justify-center font-bold text-sm shadow transition">‹</button>
+            <button onclick="scrollCarousel('trending-carousel', 600)" class="w-8 h-8 rounded-full bg-surface-elevated hover:bg-surface-border text-gray-300 hover:text-white border border-surface-border flex items-center justify-center font-bold text-sm shadow transition">›</button>
+          </div>
         </div>
-        <div id="trending-carousel" class="carousel-container flex space-x-4 overflow-x-auto py-2"></div>
+        <div class="relative group">
+          <button onclick="scrollCarousel('trending-carousel', -600)" class="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-16 bg-black/70 hover:bg-black/90 text-white items-center justify-center rounded-r-xl opacity-0 group-hover:opacity-100 transition duration-300 text-xl font-bold backdrop-blur-sm border border-surface-border">‹</button>
+          <div id="trending-carousel" class="carousel-container flex space-x-4 overflow-x-auto py-2 scroll-smooth"></div>
+          <button onclick="scrollCarousel('trending-carousel', 600)" class="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-16 bg-black/70 hover:bg-black/90 text-white items-center justify-center rounded-l-xl opacity-0 group-hover:opacity-100 transition duration-300 text-xl font-bold backdrop-blur-sm border border-surface-border">›</button>
+        </div>
       </section>
     </div>
 
@@ -277,6 +301,13 @@
       return 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%2305070a"/><stop offset="50%" stop-color="%23141724"/><stop offset="100%" stop-color="%23241434"/></linearGradient></defs><rect width="1280" height="720" fill="url(%23g)"/><text x="640" y="360" fill="%23ffffff" opacity="0.3" font-size="36" font-family="sans-serif" font-weight="bold" text-anchor="middle">' + encodeURIComponent(safeTitle) + '</text></svg>';
     }
 
+    function scrollCarousel(id, offset) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollBy({ left: offset, behavior: 'smooth' });
+      }
+    }
+
     const INITIAL_CATALOG = [
       { id: '157336', tmdbId: 157336, title: 'Interstellar', type: 'movie', year: '2014', ratingTmdb: 8.7, posterPath: '/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg', backdropPath: '/xJHokMbljvjADYdit5fK5VQsXEG.jpg', overview: 'When Earth becomes uninhabitable in the future, an ex-NASA pilot is tasked to pilot a spacecraft to find a new planet for humans.', genres: ['Sci-Fi', 'Drama'] },
       { id: '27205', tmdbId: 27205, title: 'Inception', type: 'movie', year: '2010', ratingTmdb: 8.8, posterPath: '/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg', backdropPath: '/8ZTVqvKDQ8emSGUEMjsS4yHAwrp.jpg', overview: 'A thief who steals corporate secrets through dream-sharing technology is given the task of planting an idea into a CEO\'s mind.', genres: ['Action', 'Sci-Fi'] },
@@ -284,7 +315,7 @@
       { id: '1429', tmdbId: 1429, title: 'Attack on Titan', type: 'anime', year: '2013', ratingTmdb: 9.0, posterPath: '/hTP1DtLGFamjfu8WqjnuQdP1n4i.jpg', backdropPath: '/i8GQ9L5B8D24T5PZ77rUqA1mYhD.jpg', overview: 'After his hometown is destroyed, Eren Jaeger vows to cleanse the earth of the giant humanoid Titans.', genres: ['Anime', 'Action'] },
       { id: '85937', tmdbId: 85937, title: 'Demon Slayer: Kimetsu no Yaiba', type: 'anime', year: '2019', ratingTmdb: 8.7, posterPath: '/xUfRZu2mi8jH6SzQEJGP6tjBuYj.jpg', backdropPath: '/nTvM4mhqZlHIvUkI1gqfl89Teip.jpg', overview: 'Tanjiro sets out on the dangerous path of a Demon Slayer to avenge his family and cure his sister.', genres: ['Anime', 'Action'] },
       { id: '155', tmdbId: 155, title: 'The Dark Knight', type: 'movie', year: '2008', ratingTmdb: 8.9, posterPath: '/qJ2tW6WMUDux911r6m7haRef0WH.jpg', backdropPath: '/nMKdUUepR0i5zn0y1T4CsSB5chy.jpg', overview: 'Batman raises the stakes in his war on crime with the help of Lt. Jim Gordon and District Attorney Harvey Dent against the Joker.', genres: ['Action', 'Crime'] },
-      { id: '110492', tmdbId: 110492, title: 'Severance', type: 'tv', year: '2022', ratingTmdb: 8.6, posterPath: '/A3vF1m4z3qHh29T2Fk7Z14Kx8A4.jpg', backdropPath: '/oF4h1d5lWv9qA4L0e0vC0J2fV9z.jpg', overview: 'Mark leads a team of office workers whose memories have been surgically divided between their work and personal lives.', genres: ['Sci-Fi', 'Mystery'] },
+      { id: '95396', tmdbId: 95396, title: 'Severance', type: 'tv', year: '2022', ratingTmdb: 8.6, posterPath: '/A3vF1m4z3qHh29T2Fk7Z14Kx8A4.jpg', backdropPath: '/oF4h1d5lWv9qA4L0e0vC0J2fV9z.jpg', overview: 'Mark leads a team of office workers whose memories have been surgically divided between their work and personal lives.', genres: ['Sci-Fi', 'Mystery'] },
       { id: '129', tmdbId: 129, title: 'Spirited Away', type: 'anime', year: '2001', ratingTmdb: 8.6, posterPath: '/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg', backdropPath: '/bXNvzjYEsnDmdaMm4afR7eT04vU.jpg', overview: 'During her family\'s move to the suburbs, a 10-year-old girl wanders into a world ruled by gods and spirits.', genres: ['Anime', 'Fantasy'] }
     ];
 
@@ -778,7 +809,7 @@
         let itm = CATALOG.find(c => c.id === id) || (isWl ? source[id] : source[id]?.item);
         if (!itm) return '';
         const r = userState.watched[id]?.rating;
-        const safeP = itm.poster || (itm.posterPath ? getSafeImageUrl(itm.posterPath, 'w500') : generateFallbackPoster(itm.title, itm.type));
+        const safeP = itm.poster || (itm.posterPath ? getSafeImageUrl(itm.posterPath, 'w500') : generateFallbackPoster(itm.title, item.type));
         const safeTitleEscaped = itm.title.replace(/'/g, "");
         return `
           <div onclick="openModal('${itm.id}')" class="bg-surface-card border border-surface-border rounded-xl overflow-hidden cursor-pointer hover:border-nxt-purple transition">
