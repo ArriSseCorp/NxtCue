@@ -167,11 +167,31 @@
       <div class="space-y-1.5">
         <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Quick Mood Filters:</span>
         <div class="flex flex-wrap gap-1.5 text-xs">
-          <button onclick="applyCuePrompt('mind-bending sci-fi under 2 hours')" class="px-2.5 py-1 rounded-lg bg-surface-elevated hover:bg-surface-border border border-surface-border text-gray-300 hover:text-white transition">🌌 Mind-Bending Sci-Fi</button>
-          <button onclick="applyCuePrompt('edge-of-seat 90 minute thriller')" class="px-2.5 py-1 rounded-lg bg-surface-elevated hover:bg-surface-border border border-surface-border text-gray-300 hover:text-white transition">🔪 90-Min Thriller</button>
-          <button onclick="applyCuePrompt('late-night cozy anime')" class="px-2.5 py-1 rounded-lg bg-surface-elevated hover:bg-surface-border border border-surface-border text-gray-300 hover:text-white transition">🍜 Late-Night Cozy Anime</button>
-          <button onclick="applyCuePrompt('high-stakes crime drama with a twist')" class="px-2.5 py-1 rounded-lg bg-surface-elevated hover:bg-surface-border border border-surface-border text-gray-300 hover:text-white transition">🕵️ High-Stakes Crime</button>
-          <button onclick="applyCuePrompt('pure adrenaline action blockbuster')" class="px-2.5 py-1 rounded-lg bg-surface-elevated hover:bg-surface-border border border-surface-border text-gray-300 hover:text-white transition">🔥 Adrenaline Action</button>
+          <button onclick="applyCuePrompt('mind-bending sci-fi under 2 hours')" class="px-2.5 py-1 rounded-lg bg-surface-elevated hover:bg-surface-border border border-surface-border text-gray-300 hover:text-white transition active:scale-[0.98]">🌌 Mind-Bending Sci-Fi</button>
+          <button onclick="applyCuePrompt('edge-of-seat 90 minute thriller')" class="px-2.5 py-1 rounded-lg bg-surface-elevated hover:bg-surface-border border border-surface-border text-gray-300 hover:text-white transition active:scale-[0.98]">🔪 90-Min Thriller</button>
+          <button onclick="applyCuePrompt('late-night cozy anime')" class="px-2.5 py-1 rounded-lg bg-surface-elevated hover:bg-surface-border border border-surface-border text-gray-300 hover:text-white transition active:scale-[0.98]">🍜 Late-Night Cozy Anime</button>
+          <button onclick="applyCuePrompt('high-stakes crime drama with a twist')" class="px-2.5 py-1 rounded-lg bg-surface-elevated hover:bg-surface-border border border-surface-border text-gray-300 hover:text-white transition active:scale-[0.98]">🕵️ High-Stakes Crime</button>
+          <button onclick="applyCuePrompt('pure adrenaline action blockbuster')" class="px-2.5 py-1 rounded-lg bg-surface-elevated hover:bg-surface-border border border-surface-border text-gray-300 hover:text-white transition active:scale-[0.98]">🔥 Adrenaline Action</button>
+        </div>
+      </div>
+
+      <!-- Runtime & Era Precision Controls -->
+      <div class="grid grid-cols-2 gap-3 pt-1 text-xs">
+        <div>
+          <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Max Runtime:</span>
+          <div class="flex gap-1">
+            <button onclick="setCueRuntime('any')" id="cue-rt-any" class="cue-rt-pill flex-1 py-1 rounded-lg bg-surface-border text-white text-[10px] font-bold border border-nxt-purple/50">Any</button>
+            <button onclick="setCueRuntime('90')" id="cue-rt-90" class="cue-rt-pill flex-1 py-1 rounded-lg bg-surface-elevated text-gray-400 text-[10px] font-medium border border-surface-border hover:text-white">&lt;90m</button>
+            <button onclick="setCueRuntime('120')" id="cue-rt-120" class="cue-rt-pill flex-1 py-1 rounded-lg bg-surface-elevated text-gray-400 text-[10px] font-medium border border-surface-border hover:text-white">&lt;120m</button>
+          </div>
+        </div>
+        <div>
+          <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Release Era:</span>
+          <div class="flex gap-1">
+            <button onclick="setCueEra('any')" id="cue-era-any" class="cue-era-pill flex-1 py-1 rounded-lg bg-surface-border text-white text-[10px] font-bold border border-nxt-purple/50">Any</button>
+            <button onclick="setCueEra('modern')" id="cue-era-modern" class="cue-era-pill flex-1 py-1 rounded-lg bg-surface-elevated text-gray-400 text-[10px] font-medium border border-surface-border hover:text-white">2020s</button>
+            <button onclick="setCueEra('classic')" id="cue-era-classic" class="cue-era-pill flex-1 py-1 rounded-lg bg-surface-elevated text-gray-400 text-[10px] font-medium border border-surface-border hover:text-white">Pre-2015</button>
+          </div>
         </div>
       </div>
 
@@ -367,11 +387,19 @@
               <span class="text-[10px] text-gray-400">For Excel / Sheets</span>
             </button>
           </div>
-          <div class="pt-2">
+          <div class="space-y-2 pt-2">
             <input type="file" id="import-file-input" accept=".json" class="hidden" onchange="importUserDataJSON(event)" />
-            <button onclick="document.getElementById('import-file-input').click()" class="w-full py-2.5 rounded-xl text-xs font-semibold bg-surface-elevated border border-surface-border hover:border-nxt-purple text-gray-200 text-center transition block active:scale-[0.98]">
-              Restore from Backup File (.json)
+            <button onclick="document.getElementById('import-file-input').click()" class="w-full py-2 rounded-xl text-xs font-semibold bg-surface-elevated border border-surface-border hover:border-nxt-purple text-gray-200 text-center transition block active:scale-[0.98]">
+              Restore Backup File (.json)
             </button>
+
+            <!-- Letterboxd & IMDb CSV Importer -->
+            <input type="file" id="import-csv-input" accept=".csv" class="hidden" onchange="importExternalCSV(event)" />
+            <button onclick="document.getElementById('import-csv-input').click()" class="w-full py-2.5 rounded-xl text-xs font-bold bg-surface-card border border-nxt-cyan/40 hover:border-nxt-cyan text-nxt-cyan hover:text-white text-center transition block active:scale-[0.98] shadow-sm flex items-center justify-center gap-1.5">
+              <span>📥</span>
+              <span>Import IMDb / Letterboxd (CSV)</span>
+            </button>
+            <p id="csv-import-status" class="text-[10px] text-gray-400 text-center hidden"></p>
           </div>
         </div>
       </div>
@@ -546,7 +574,11 @@
             <span class="text-gray-500">Room Code:</span>
             <strong id="streammatch-room-code" class="text-nxt-cyan font-mono tracking-wider">CUE-8924</strong>
           </div>
-          <button onclick="regenerateRoomCode()" class="p-2 rounded-xl bg-surface-elevated hover:bg-surface-border border border-surface-border text-gray-300 hover:text-white text-xs" title="Regenerate Code">🔄</button>
+          <button onclick="copyStreamMatchLink()" class="px-3 py-1.5 rounded-xl bg-surface-elevated hover:bg-surface-border border border-surface-border text-xs font-bold text-gray-200 hover:text-white flex items-center gap-1.5 transition active:scale-[0.98]" title="Copy Shareable Sync Link">
+            <span>📋</span>
+            <span id="copy-sync-label">Share Link</span>
+          </button>
+          <button onclick="regenerateRoomCode()" class="p-2 rounded-xl bg-surface-elevated hover:bg-surface-border border border-surface-border text-gray-300 hover:text-white text-xs transition active:scale-[0.98]" title="Regenerate Code">🔄</button>
         </div>
       </div>
 
@@ -833,8 +865,36 @@
     function loadState() {
       const s = localStorage.getItem('nxtcue_master_state_v5');
       if (s) {
-        try { userState = JSON.parse(s); } catch(e) {}
+        try {
+          userState = JSON.parse(s);
+          // Restore StreamMatch Partner selections if available
+          if (userState.streamMatchPartner) {
+            const p = userState.streamMatchPartner;
+            if (p.roomCode && document.getElementById('streammatch-room-code')) {
+              document.getElementById('streammatch-room-code').innerText = p.roomCode;
+            }
+            if (p.genres) {
+              ['scifi', 'thriller', 'action', 'drama', 'anime', 'crime'].forEach(g => {
+                const el = document.getElementById(`sm-genre-${g}`);
+                if (el) el.checked = p.genres.some(x => x.toLowerCase().includes(g));
+              });
+            }
+            if (document.getElementById('sm-veto-horror')) document.getElementById('sm-veto-horror').checked = !!p.vetoHorror;
+            if (document.getElementById('sm-veto-slow')) document.getElementById('sm-veto-slow').checked = !!p.vetoSlow;
+          }
+        } catch(e) {}
       }
+
+      // Check URL search parameters for shared room sync
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const urlRoom = params.get('room');
+        if (urlRoom && document.getElementById('streammatch-room-code')) {
+          document.getElementById('streammatch-room-code').innerText = urlRoom;
+          switchView('streammatch');
+        }
+      } catch (e) {}
+
       syncSubscriptionUI();
     }
 
@@ -1203,6 +1263,7 @@
       const isW = !!userState.watched[item.id];
       const isWl = !!userState.watchlist[item.id];
       const isFav = !!userState.favorites?.[item.id];
+      const prog = getSeriesProgress(item);
       const safePoster = item.posterPath ? getSafeImageUrl(item.posterPath, 'w500') : generateFallbackPoster(item.title, item.type);
       const safeTitleEscaped = item.title.replace(/'/g, "");
 
@@ -1214,11 +1275,30 @@
             <div class="absolute top-2 left-2 flex flex-col space-y-1">
               ${isFav ? `<span class="bg-rose-600/95 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow">❤️</span>` : ''}
               ${isW ? `<span class="bg-emerald-500/95 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow">Watched</span>` : isWl ? `<span class="spectrum-gradient text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow">Watchlist</span>` : ''}
+              ${(item.type === 'tv' || item.type === 'anime') && prog && prog.watchedEps > 0 ? `<span class="bg-nxt-purple/90 backdrop-blur-sm border border-nxt-cyan/40 text-white text-[9px] font-extrabold px-1.5 py-0.2 rounded-md shadow tabular-nums">${prog.nextEpStr || 'Done'}</span>` : ''}
             </div>
+
+            <!-- Quick +1 Ep Increment Button for TV & Anime -->
+            ${(item.type === 'tv' || item.type === 'anime') && prog && prog.nextEp ? `
+              <button onclick="quickAdvanceEpisode('${item.id}', event)" title="Quick Log Next: ${prog.nextEpStr}" class="opacity-0 group-hover:opacity-100 focus:opacity-100 transition duration-200 absolute top-2 right-2 bg-black/85 hover:bg-nxt-purple border border-nxt-cyan/50 text-nxt-cyan hover:text-white rounded-lg px-2 py-0.5 text-[10px] font-extrabold shadow-lg flex items-center gap-1 active:scale-90">
+                +1 Ep
+              </button>
+            ` : ''}
+
             <div class="absolute bottom-0 inset-x-0 p-2.5 bg-gradient-to-t from-black via-black/80 to-transparent">
               <h3 class="text-xs font-bold text-white truncate">${item.title}</h3>
-              <p class="text-[10px] text-gray-400 capitalize tabular-nums">${item.type} • ★ ${item.ratingTmdb}</p>
+              <div class="flex items-center justify-between">
+                <p class="text-[10px] text-gray-400 capitalize tabular-nums">${item.type} • ★ ${item.ratingTmdb}</p>
+                ${(item.type === 'tv' || item.type === 'anime') && prog && prog.watchedEps > 0 ? `<span class="text-[9px] font-bold text-nxt-coral tabular-nums">${prog.percent}%</span>` : ''}
+              </div>
             </div>
+
+            <!-- Bottom Progress Line for Series & Anime -->
+            ${(item.type === 'tv' || item.type === 'anime') && prog && prog.watchedEps > 0 ? `
+              <div class="absolute bottom-0 inset-x-0 h-1 bg-surface-base/80 overflow-hidden">
+                <div class="spectrum-gradient h-full transition-all duration-300" style="width: ${prog.percent}%"></div>
+              </div>
+            ` : ''}
           </div>
         </div>`;
     }
@@ -1759,7 +1839,16 @@
       shelf.classList.remove('hidden');
 
       // Semantic matching against CATALOG
-      let scored = CATALOG.filter(c => !userState.watched[c.id]).map(c => {
+      let scored = CATALOG.filter(c => !userState.watched[c.id]).filter(c => {
+        // Runtime constraint check
+        if (activeCueRuntime === '90' && c.type === 'movie' && (c.runtime || 110) > 98) return false;
+        if (activeCueRuntime === '120' && c.type === 'movie' && (c.runtime || 110) > 125) return false;
+        // Era constraint check
+        const yr = parseInt(c.year || '2020');
+        if (activeCueEra === 'modern' && yr < 2020) return false;
+        if (activeCueEra === 'classic' && yr >= 2015) return false;
+        return true;
+      }).map(c => {
         let matchPts = calculateNextCueScore(c).score;
         let reasons = [];
 
@@ -1811,7 +1900,14 @@
       if (document.getElementById('sm-genre-anime')?.checked) partnerGenres.push('Anime');
       if (document.getElementById('sm-genre-crime')?.checked) partnerGenres.push('Crime');
 
-      const noHorror = document.getElementById('sm-veto-horror')?.checked;
+      const noHorror = !!document.getElementById('sm-veto-horror')?.checked;
+      const noSlow = !!document.getElementById('sm-veto-slow')?.checked;
+      const roomCode = document.getElementById('streammatch-room-code')?.innerText || 'CUE-8924';
+
+      // Persist in userState
+      if (!userState.streamMatchPartner) userState.streamMatchPartner = {};
+      userState.streamMatchPartner = { genres: partnerGenres, vetoHorror: noHorror, vetoSlow: noSlow, roomCode };
+      saveState();
       const listEl = document.getElementById('streammatch-results-list');
       if (!listEl) return;
 
@@ -1882,6 +1978,197 @@
       const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}`;
       window.open(googleCalUrl, '_blank');
     }
+
+    
+    // =========================================================================
+    // DAY 4 UPGRADES: PROGRESS ENGINE, CSV IMPORTER, PERSISTENCE & SHORTCUTS
+    // =========================================================================
+    let activeCueRuntime = 'any';
+    let activeCueEra = 'any';
+
+    function setCueRuntime(rt) {
+      activeCueRuntime = rt;
+      document.querySelectorAll('.cue-rt-pill').forEach(b => {
+        b.classList.remove('bg-surface-border', 'text-white', 'border-nxt-purple/50', 'font-bold');
+        b.classList.add('bg-surface-elevated', 'text-gray-400', 'border-surface-border', 'font-medium');
+      });
+      const target = document.getElementById(`cue-rt-${rt}`);
+      if (target) {
+        target.classList.remove('bg-surface-elevated', 'text-gray-400', 'border-surface-border', 'font-medium');
+        target.classList.add('bg-surface-border', 'text-white', 'border-nxt-purple/50', 'font-bold');
+      }
+      executeCueQuery();
+    }
+
+    function setCueEra(era) {
+      activeCueEra = era;
+      document.querySelectorAll('.cue-era-pill').forEach(b => {
+        b.classList.remove('bg-surface-border', 'text-white', 'border-nxt-purple/50', 'font-bold');
+        b.classList.add('bg-surface-elevated', 'text-gray-400', 'border-surface-border', 'font-medium');
+      });
+      const target = document.getElementById(`cue-era-${era}`);
+      if (target) {
+        target.classList.remove('bg-surface-elevated', 'text-gray-400', 'border-surface-border', 'font-medium');
+        target.classList.add('bg-surface-border', 'text-white', 'border-nxt-purple/50', 'font-bold');
+      }
+      executeCueQuery();
+    }
+
+    // Series and Anime Granular Progress Engine
+    function getSeriesProgress(item) {
+      if (!item || (item.type !== 'tv' && item.type !== 'anime')) return null;
+      const seasons = item.totalSeasons || 1;
+      const epMap = item.episodesPerSeason || [10];
+      let totalEps = 0;
+      let watchedEps = 0;
+      let nextEp = null;
+
+      for (let s = 1; s <= seasons; s++) {
+        const count = epMap[s - 1] || 10;
+        totalEps += count;
+        for (let e = 1; e <= count; e++) {
+          const k = `${item.id}_s${s}_e${e}`;
+          if (userState.episodesWatched?.[k]) {
+            watchedEps++;
+          } else if (!nextEp) {
+            nextEp = { season: s, episode: e };
+          }
+        }
+      }
+
+      const percent = Math.round((watchedEps / (totalEps || 1)) * 100);
+      const nextEpStr = nextEp ? `S${nextEp.season} • E${nextEp.episode}` : '';
+      return { totalEps, watchedEps, percent, nextEp, nextEpStr };
+    }
+
+    // Quick Increment +1 Episode Directly from Card
+    function quickAdvanceEpisode(itemId, e) {
+      if (e) e.stopPropagation();
+      const item = CATALOG.find(c => c.id === itemId);
+      if (!item) return;
+      const prog = getSeriesProgress(item);
+      if (prog && prog.nextEp) {
+        const key = `${itemId}_s${prog.nextEp.season}_e${prog.nextEp.episode}`;
+        if (!userState.episodesWatched) userState.episodesWatched = {};
+        userState.episodesWatched[key] = true;
+        
+        // Auto mark as watched if reached 100%
+        if (prog.watchedEps + 1 >= prog.totalEps) {
+          userState.watched[itemId] = true;
+          delete userState.watchlist[itemId];
+        } else {
+          // If starting to watch, keep in active consideration
+          if (!userState.watchlist[itemId] && !userState.watched[itemId]) {
+            userState.watchlist[itemId] = true;
+          }
+        }
+        saveState();
+        refreshUI();
+      }
+    }
+
+    // StreamMatch Share Link Generator
+    function copyStreamMatchLink() {
+      const code = document.getElementById('streammatch-room-code')?.innerText || 'CUE-8924';
+      const url = `${window.location.origin}${window.location.pathname}?room=${code}`;
+      navigator.clipboard.writeText(url).then(() => {
+        const label = document.getElementById('copy-sync-label');
+        if (label) {
+          const orig = label.innerText;
+          label.innerText = 'Copied!';
+          setTimeout(() => label.innerText = orig, 2000);
+        }
+      }).catch(() => {
+        prompt('Copy your StreamMatch sync link:', url);
+      });
+    }
+
+    // Letterboxd & IMDb CSV Importer
+    function importExternalCSV(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      const statusEl = document.getElementById('csv-import-status');
+      if (statusEl) {
+        statusEl.classList.remove('hidden');
+        statusEl.innerText = 'Parsing CSV watchlist...';
+      }
+
+      reader.onload = (e) => {
+        try {
+          const text = e.target.result;
+          const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+          if (lines.length < 2) throw new Error('File is empty or invalid.');
+
+          const header = lines[0].toLowerCase();
+          const isLetterboxd = header.includes('letterboxd') || header.includes('uri') || (header.includes('name') && header.includes('year'));
+          const isImdb = header.includes('const') || header.includes('your rating') || header.includes('imdb');
+
+          let importedCount = 0;
+          lines.slice(1).forEach(line => {
+            const fields = line.match(/(?:\"[^\"]*\"|[^,])+/g) || [];
+            if (!fields.length) return;
+
+            let titleStr = '';
+            let yearStr = '';
+            let ratingVal = 0;
+
+            if (isLetterboxd) {
+              titleStr = fields[1]?.replace(/\"/g, '').trim();
+              yearStr = fields[2]?.replace(/\"/g, '').trim();
+              ratingVal = parseFloat(fields[4]?.replace(/\"/g, '') || '0') * 2;
+            } else {
+              titleStr = fields[3]?.replace(/\"/g, '').trim() || fields[1]?.replace(/\"/g, '').trim();
+              yearStr = fields[8]?.replace(/\"/g, '').trim() || fields[2]?.replace(/\"/g, '').trim();
+              ratingVal = parseFloat(fields[1]?.replace(/\"/g, '') || '0');
+            }
+
+            if (titleStr) {
+              const match = CATALOG.find(c => c.title.toLowerCase() === titleStr.toLowerCase());
+              if (match) {
+                userState.watched[match.id] = true;
+                if (ratingVal >= 8) {
+                  if (!userState.favorites) userState.favorites = {};
+                  userState.favorites[match.id] = true;
+                }
+                importedCount++;
+              }
+            }
+          });
+
+          saveState();
+          refreshUI();
+          if (statusEl) {
+            statusEl.innerText = `✓ Successfully matched and imported ${importedCount} titles to your NxtCue Library!`;
+            statusEl.classList.remove('hidden', 'text-rose-400');
+            statusEl.classList.add('text-emerald-400');
+          }
+        } catch (err) {
+          if (statusEl) {
+            statusEl.innerText = 'Could not parse CSV. Please use standard Letterboxd or IMDb export files.';
+            statusEl.classList.remove('hidden', 'text-emerald-400');
+            statusEl.classList.add('text-rose-400');
+          }
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // Keyboard Accessibility Shortcuts
+    document.addEventListener('keydown', (e) => {
+      // Press '/' to search
+      if (e.key === '/' && document.activeElement?.tagName !== 'INPUT') {
+        e.preventDefault();
+        document.getElementById('search-input')?.focus();
+      }
+      // Press 'Escape' to close all modals and drawers
+      if (e.key === 'Escape') {
+        document.getElementById('title-modal')?.classList.add('hidden');
+        document.getElementById('cues-modal')?.classList.add('hidden');
+        document.getElementById('onboarding-modal')?.classList.add('hidden');
+        document.getElementById('account-drawer')?.classList.add('hidden');
+      }
+    });
 
     function switchView(v) {
       if (v === "streammatch") calculateStreamMatch();
